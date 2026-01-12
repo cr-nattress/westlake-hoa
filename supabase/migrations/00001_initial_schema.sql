@@ -2,7 +2,7 @@
 -- This migration creates the core tables for the HOA transparency platform
 
 -- Enable required extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Note: gen_random_uuid() is built-in to PostgreSQL 13+ and Supabase
 CREATE EXTENSION IF NOT EXISTS "vector";
 
 -- Create dedicated schema for the application
@@ -53,7 +53,7 @@ CREATE TYPE westlake.decision_status AS ENUM (
 
 -- Documents table - stores all HOA documents
 CREATE TABLE westlake.documents (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
   type westlake.document_type NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE westlake.documents (
 
 -- Document versions for version history
 CREATE TABLE westlake.document_versions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   document_id UUID REFERENCES westlake.documents(id) ON DELETE CASCADE,
   version INTEGER NOT NULL,
   content TEXT,
@@ -79,7 +79,7 @@ CREATE TABLE westlake.document_versions (
 
 -- Tags for document categorization
 CREATE TABLE westlake.tags (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT UNIQUE NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -93,7 +93,7 @@ CREATE TABLE westlake.document_tags (
 
 -- Meetings table
 CREATE TABLE westlake.meetings (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   type westlake.meeting_type NOT NULL,
   date TIMESTAMPTZ NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE westlake.meeting_documents (
 
 -- Decisions from meetings
 CREATE TABLE westlake.decisions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   meeting_id UUID REFERENCES westlake.meetings(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   summary TEXT,
@@ -130,7 +130,7 @@ CREATE TABLE westlake.decisions (
 
 -- Document embeddings for AI-powered search
 CREATE TABLE westlake.document_embeddings (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   document_id UUID REFERENCES westlake.documents(id) ON DELETE CASCADE,
   chunk_index INTEGER NOT NULL,
   chunk_text TEXT NOT NULL,
