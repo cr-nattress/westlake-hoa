@@ -1,6 +1,8 @@
-﻿nul
-tmpclaude-*
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Temp files
+nul
+tmpclaude-*
 
 # dependencies
 /node_modules
@@ -32,11 +34,23 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files
+.env
+.env.local
+.env.*.local
+
+# Keep .env.example for documentation
+!.env.example
 
 # vercel
 .vercel
+
+# Supabase local development
+.supabase
+supabase/.temp
+
+# Netlify
+.netlify
 
 # typescript
 *.tsbuildinfo
