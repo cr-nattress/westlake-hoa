@@ -82,7 +82,7 @@ export function DocumentChat({
   return (
     <div className="flex flex-col h-[400px]">
       {/* Messages Area */}
-      <ScrollArea ref={scrollAreaRef} className="flex-1 -mx-4 px-4">
+      <ScrollArea ref={scrollAreaRef} className="flex-1 min-h-0 -mx-4 px-4">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center py-4">
             <Bot className="h-8 w-8 text-muted-foreground mb-3" />

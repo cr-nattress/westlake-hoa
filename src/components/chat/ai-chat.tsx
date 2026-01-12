@@ -70,7 +70,7 @@ export function AIChat({ initialMessage, documentContext }: AIChatProps) {
   return (
     <Card className="flex flex-col h-[500px] md:h-[600px]">
       {/* Messages Area */}
-      <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
+      <ScrollArea ref={scrollAreaRef} className="flex-1 min-h-0 p-4">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center p-4">
             <Bot className="h-12 w-12 text-muted-foreground mb-4" />

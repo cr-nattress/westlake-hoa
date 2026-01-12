@@ -80,27 +80,34 @@ export default function HomePage() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative py-12 md:py-20 lg:py-28">
-        <div className="container mx-auto px-4">
+      <section className="relative py-12 md:py-20 lg:py-28 overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/westlake-hero.webp')" }}
+        />
+        {/* Dark Overlay for text readability */}
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             {/* Unofficial Badge */}
             <Badge
               variant="outline"
-              className="mb-6 bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800"
+              className="mb-6 bg-amber-500/90 text-white border-amber-400"
             >
               Unofficial HOA Information Hub
             </Badge>
 
             {/* Headline */}
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6 text-white">
               Westlake Village HOA
-              <span className="block text-muted-foreground font-normal text-2xl md:text-3xl lg:text-4xl mt-2">
+              <span className="block text-white/80 font-normal text-2xl md:text-3xl lg:text-4xl mt-2">
                 HOA Hub
               </span>
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
               Clear, lawful, and neutral access to HOA documents, meetings, and
               processes. Ask questions and get AI-powered answers with source
               citations.
