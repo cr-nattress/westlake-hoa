@@ -1,6 +1,6 @@
 "use client";
 
-import { useChat } from "ai/react";
+import { useChat, type Message } from "ai/react";
 import { useRef, useEffect } from "react";
 import { Send, Bot, User, Loader2, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,14 +22,14 @@ export function AIChat({ initialMessage, documentContext }: AIChatProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, reload, stop } =
+  const { messages, input, handleInputChange, handleSubmit, isLoading, stop } =
     useChat({
       api: "/api/chat",
       body: {
         documentContext,
       },
       initialMessages: initialMessage
-        ? [{ id: "initial", role: "user", content: initialMessage }]
+        ? [{ id: "initial", role: "user" as const, content: initialMessage }]
         : [],
     });
 
@@ -83,7 +83,7 @@ export function AIChat({ initialMessage, documentContext }: AIChatProps) {
           </div>
         ) : (
           <div className="space-y-4">
-            {messages.map((message) => (
+            {messages.map((message: Message) => (
               <div
                 key={message.id}
                 className={cn(

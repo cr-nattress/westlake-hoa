@@ -83,14 +83,14 @@ export async function POST(req: Request) {
       contextSection = `\n\n## Document Context\n\nNo specific document context was provided. Base your response on general HOA knowledge while being clear that you cannot cite specific Westlake Village HOA documents without the proper context. Encourage the user to ask about specific topics like insurance, collections, enforcement, or records requests.`;
     }
 
-    const result = await streamText({
+    const result = streamText({
       model: anthropic("claude-sonnet-4-20250514"),
       system: SYSTEM_PROMPT + contextSection,
       messages,
       temperature: 0.3, // Lower temperature for more factual responses
     });
 
-    return result.toTextStreamResponse();
+    return result.toDataStreamResponse();
   } catch (error) {
     console.error("Chat API error:", error);
     return new Response(
