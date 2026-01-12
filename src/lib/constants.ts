@@ -36,4 +36,5 @@ export const DISCLAIMERS = {
   site: "This is an unofficial, homeowner-run information resource. Not affiliated with the HOA Board, management company, or legal counsel.",
   ai: "This is informational only, not legal advice. Consult the official documents or seek professional advice for binding terms.",
   notLegalAdvice: "This information is provided for informational purposes only and does not constitute legal advice.",
+  documents: "Documents are provided for informational purposes. Always verify with official sources for the most current versions.",
 } as const;

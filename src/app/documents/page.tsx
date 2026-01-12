@@ -108,10 +108,15 @@ export default async function DocumentsPage({ searchParams }: DocumentsPageProps
                       </div>
                       <div>
                         <CardTitle className="text-lg">{doc.title}</CardTitle>
-                        <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
                           <Badge className={typeInfo?.color} variant="secondary">
                             {typeInfo?.label || doc.type}
                           </Badge>
+                          {doc.status === "superseded" && (
+                            <Badge variant="outline" className="text-muted-foreground">
+                              Superseded
+                            </Badge>
+                          )}
                           <span className="text-sm text-muted-foreground">
                             {formatDate(doc.published_at)}
                           </span>
@@ -161,17 +166,6 @@ export default async function DocumentsPage({ searchParams }: DocumentsPageProps
         </Card>
       )}
 
-      {/* Coming Soon Notice */}
-      <Card className="mt-8 border-dashed">
-        <CardContent className="py-8 text-center">
-          <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="font-semibold text-lg mb-2">More Documents Coming Soon</h3>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            We&apos;re working on adding more HOA documents including declarations,
-            bylaws, and historical meeting minutes.
-          </p>
-        </CardContent>
-      </Card>
     </div>
   );
 }
