@@ -95,7 +95,7 @@ export default function HomePage() {
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
               Westlake Village HOA
               <span className="block text-muted-foreground font-normal text-2xl md:text-3xl lg:text-4xl mt-2">
-                Transparency Hub
+                HOA Hub
               </span>
             </h1>
 

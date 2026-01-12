@@ -1,6 +1,6 @@
-# Westlake Transparency Hub - Product Backlog
+# Westlake HOA Hub - Product Backlog
 
-This backlog contains all epics and user stories for building the Westlake HOA Transparency Hub.
+This backlog contains all epics and user stories for building the Westlake HOA Hub.
 
 ## Primary Goal
 

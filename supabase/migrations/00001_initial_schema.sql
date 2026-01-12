@@ -1,4 +1,4 @@
--- Westlake Transparency Hub - Initial Database Schema
+-- Westlake HOA Hub - Initial Database Schema
 -- This migration creates the core tables for the HOA transparency platform
 
 -- Enable required extensions
@@ -307,7 +307,7 @@ $$;
 -- COMMENTS
 -- ============================================
 
-COMMENT ON SCHEMA westlake IS 'Westlake Village HOA Transparency Hub application schema';
+COMMENT ON SCHEMA westlake IS 'Westlake Village HOA Hub application schema';
 COMMENT ON TABLE westlake.documents IS 'Official HOA documents including declarations, bylaws, policies, and meeting minutes';
 COMMENT ON TABLE westlake.document_embeddings IS 'Vector embeddings for RAG-based document search';
 COMMENT ON TABLE westlake.meetings IS 'Board and community meetings';

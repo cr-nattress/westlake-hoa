@@ -1,4 +1,4 @@
--- Westlake Transparency Hub - Seed Data
+-- Westlake HOA Hub - Seed Data
 -- Sample data for development and testing
 
 SET search_path TO westlake, public;

@@ -1,5 +1,5 @@
 export const SITE_CONFIG = {
-  name: "Westlake Transparency Hub",
+  name: "Westlake HOA Hub",
   description:
     "Unofficial, AI-powered information portal for the Westlake Village Condominium Association in Avon, Colorado.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",

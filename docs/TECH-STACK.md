@@ -1,6 +1,6 @@
 # Technology Stack Recommendations
 
-This document provides specific technology recommendations and setup guidance for the Westlake Transparency Hub.
+This document provides specific technology recommendations and setup guidance for the Westlake HOA Hub.
 
 ---
 

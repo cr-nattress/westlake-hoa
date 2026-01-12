@@ -5,7 +5,7 @@ import { DISCLAIMERS } from "@/lib/constants";
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-const SYSTEM_PROMPT = `You are the Westlake Village HOA Document Assistant, an AI helper for the unofficial Westlake Transparency Hub.
+const SYSTEM_PROMPT = `You are the Westlake Village HOA Document Assistant, an AI helper for the unofficial Westlake HOA Hub.
 
 ## Your Role
 You help homeowners, tenants, and prospective owners understand HOA documents, policies, and procedures. You provide clear, accurate information based on official HOA documents.

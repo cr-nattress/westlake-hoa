@@ -1,4 +1,4 @@
-# Netlify Configuration for Westlake Transparency Hub
+# Netlify Configuration for Westlake HOA Hub
 
 [build]
   command = "npm run build"

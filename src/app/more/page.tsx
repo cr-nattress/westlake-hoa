@@ -17,7 +17,7 @@ import {
 
 export const metadata: Metadata = {
   title: "More",
-  description: "Additional resources and information about the Westlake Transparency Hub.",
+  description: "Additional resources and information about the Westlake HOA Hub.",
 };
 
 const links = [

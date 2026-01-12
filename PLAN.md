@@ -1,5 +1,5 @@
 
-# Westlake Transparency Hub (Unofficial HOA Site)
+# Westlake HOA Hub (Unofficial HOA Site)
 
 ## Purpose
 

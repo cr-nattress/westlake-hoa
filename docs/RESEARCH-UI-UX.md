@@ -1,4 +1,4 @@
-# UI/UX Research: Westlake Transparency Hub
+# UI/UX Research: Westlake HOA Hub
 
 This document consolidates research on best practices for building a modern, accessible, mobile-first transparency website using Next.js, React, and TypeScript.
 

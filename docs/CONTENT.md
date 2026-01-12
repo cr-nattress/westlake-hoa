@@ -1,12 +1,12 @@
 # Westlake Village HOA - Site Content
 
-This document provides structured content for the Westlake Transparency Hub, derived from official HOA documents.
+This document provides structured content for the Westlake HOA Hub, derived from official HOA documents.
 
 ---
 
 ## About This Site
 
-**Westlake Transparency Hub** is an unofficial, homeowner-run information website for the Westlake Village Condominium Association in Avon, Colorado.
+**Westlake HOA Hub** is an unofficial, homeowner-run information website for the Westlake Village Condominium Association in Avon, Colorado.
 
 **Our Primary Goal:** Open and transparent communication for all owners and tenants.
 
