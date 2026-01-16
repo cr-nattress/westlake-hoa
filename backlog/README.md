@@ -24,6 +24,7 @@ An unofficial, homeowner-run transparency website providing clear, lawful, and n
 | 5 | Insurance Section | 2 | High | Not Started |
 | 6 | Records Request Guide | 2 | High | Not Started |
 | 7 | Polish & Performance | 3 | Medium | Not Started |
+| 8 | Document Intelligence & AI Enhancement | 2 | High | Not Started |
 
 ---
 
@@ -41,8 +42,9 @@ An unofficial, homeowner-run transparency website providing clear, lawful, and n
 - Epic 4: Meetings & Decisions
 - Epic 5: Insurance Section
 - Epic 6: Records Request Guide
+- Epic 8: Document Intelligence & AI Enhancement
 
-**Goal:** Complete information hub with all major HOA topics covered.
+**Goal:** Complete information hub with all major HOA topics covered, plus intelligent document search and AI-powered answers.
 
 ### Phase 3: Refinement
 - Epic 7: Polish & Performance
@@ -125,9 +127,24 @@ backlog/
 ├── epic-6-records-request/
 │   ├── EPIC.md
 │   └── stories/
-└── epic-7-polish-performance/
+├── epic-7-polish-performance/
+│   ├── EPIC.md
+│   └── stories/
+└── epic-8-document-intelligence/
     ├── EPIC.md
     └── stories/
+        ├── 8.1-document-content-loader.md
+        ├── 8.2-populate-document-content.md
+        ├── 8.3-display-document-content.md
+        ├── 8.4-topic-index-data-structure.md
+        ├── 8.5-quick-answer-cards.md
+        ├── 8.6-quick-answers-page.md
+        ├── 8.7-faq-page-generation.md
+        ├── 8.8-enhanced-ai-context-builder.md
+        ├── 8.9-ai-system-prompt-enhancement.md
+        ├── 8.10-document-search-enhancement.md
+        ├── 8.11-related-documents-component.md
+        └── 8.12-document-key-facts-card.md
 ```
 
 ---

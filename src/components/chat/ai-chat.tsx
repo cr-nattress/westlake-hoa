@@ -11,23 +11,16 @@ import { cn } from "@/lib/utils";
 
 interface AIChatProps {
   initialMessage?: string;
-  documentContext?: Array<{
-    title: string;
-    content: string;
-    section?: string;
-  }>;
 }
 
-export function AIChat({ initialMessage, documentContext }: AIChatProps) {
+export function AIChat({ initialMessage }: AIChatProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Document context is built server-side in the API route based on each query
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop } =
     useChat({
       api: "/api/chat",
-      body: {
-        documentContext,
-      },
       initialMessages: initialMessage
         ? [{ id: "initial", role: "user" as const, content: initialMessage }]
         : [],

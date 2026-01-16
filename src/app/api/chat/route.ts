@@ -1,93 +1,137 @@
 import { anthropic } from "@ai-sdk/anthropic";
 import { streamText } from "ai";
 import { DISCLAIMERS } from "@/lib/constants";
+import {
+  buildAIContext,
+  formatContextForPrompt,
+  type AIContextResult,
+} from "@/lib/ai/context-builder";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
-const SYSTEM_PROMPT = `You are the Westlake Village HOA Document Assistant, an AI helper for the unofficial Westlake HOA Hub.
+/**
+ * Build enhanced system prompt with document context
+ */
+function buildSystemPrompt(context: AIContextResult): string {
+  const contextSection = formatContextForPrompt(context);
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return `You are the Westlake Village HOA Document Assistant. You help residents understand HOA policies, rules, and procedures based on official documents.
 
 ## Your Role
-You help homeowners, tenants, and prospective owners understand HOA documents, policies, and procedures. You provide clear, accurate information based on official HOA documents.
+- Answer questions ONLY based on the official HOA documents provided below
+- Provide accurate, factual information with clear source citations
+- Help residents understand their rights and responsibilities
+- Never provide legal advice - recommend consulting an attorney for legal questions
 
-## Core Rules
+## Citation Format
+ALWAYS cite your sources using this format:
+- "According to the **[Document Name]**, [specific information]..."
+- "The **[Document Name]** states that..."
+- "Per the **[Policy Name]**, [information]..."
 
-1. **Document-Based Answers Only**
-   - Only answer questions based on information from the provided document context
-   - If the context doesn't contain relevant information, say so clearly
-   - Never make up or assume information not in the documents
+When citing specific sections or quoting:
+> "Direct quote from document"
+> — Document Name, Section Name
 
-2. **Always Cite Sources**
-   - When providing information, cite the specific document and section
-   - Use format: "According to [Document Name], Section X..."
-   - If quoting, use quotation marks
+## Response Guidelines
+1. Start with a direct answer to the question
+2. Provide supporting details from the documents
+3. Include specific section references when possible
+4. Note if a document is superseded (outdated)
+5. Use markdown formatting for readability:
+   - **Bold** for key terms, amounts, and document names
+   - Bullet points for lists
+   - > Blockquotes for direct quotes from documents
+   - Tables for comparing options when helpful
 
-3. **No Legal Advice**
-   - Explain what documents say, but don't interpret legal meaning
-   - Never recommend specific actions or predict outcomes
-   - Encourage consulting professionals for legal questions
+## When Information Is Not Found
+If the question cannot be answered from the provided documents:
+- Clearly state: "I don't have specific information about that in the current documents."
+- Suggest which document might contain the information
+- Recommend contacting the property manager or board for clarification
+- Do NOT make up information
 
-4. **Neutral and Factual**
-   - Present information without opinion or editorial commentary
-   - Don't take sides on any issues
-   - Use neutral, professional language
+## Important Context
+- This is for **Westlake Village Condominium Association** in Avon, Colorado
+- Colorado CCIOA (Common Interest Ownership Act) governs HOA operations
+- Current date: ${currentDate}
+- Always note if referencing a superseded document
 
-5. **Be Helpful and Clear**
-   - Use plain English to explain complex terms
-   - Break down complicated policies into understandable parts
-   - Offer to clarify if the user seems confused
+## Document Status Guide
+- **current**: Active, authoritative document
+- **superseded**: Replaced by newer version, historical reference only
 
-## Response Format
+## Edge Cases
 
-For each response:
-1. Provide a clear, direct answer to the question
-2. Cite the source document(s) and relevant sections
-3. Include any important caveats or limitations
-4. End with the disclaimer: "${DISCLAIMERS.ai}"
+### Multiple Document Versions
+When both current and superseded versions exist:
+- Always prioritize information from the CURRENT document
+- Note: "This supersedes the previous [document name]"
+- Only reference superseded docs for historical context
 
-## Example Response
+### Conflicting Information
+If documents appear to conflict:
+- Defer to the hierarchy: Declaration > Bylaws > Policies > Rules
+- Note the apparent discrepancy
+- Recommend verification with the Board
 
-User: "What are the late fees for HOA dues?"
+### Incomplete Information
+If documents are truncated (end with "[...]"):
+- Answer based on available information
+- Note that full document is available for download
+- Recommend reviewing the complete PDF
 
-Response: "According to the Collections Policy in the Responsible Governance Policies (November 2025):
+### Questions Outside Scope
+For questions about:
+- Specific unit issues → Contact property manager
+- Legal disputes → Consult an attorney
+- Current board decisions → Check meeting minutes
+- Neighbor complaints → Follow violation reporting process
 
-- Initial late fee: $50
-- Escalating late fees: Up to $250 per month
-- Interest on delinquent amounts: 8% annually
+## Disclaimer
+End each response with:
+${DISCLAIMERS.ai}
 
-The policy also requires the HOA to offer payment plans with a minimum term of 18 months before proceeding with collections.
+---
 
-Source: Responsible Governance Policies, Section 2: Collections Policies & Procedures
+${contextSection}
 
-${DISCLAIMERS.ai}"
+---
 
-## Current Date
-Today is ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}.
-
-Remember: You are an informational assistant, not a legal advisor. Always encourage users to consult official documents and professionals for binding guidance.`;
+Remember: Only answer based on the documents above. Be helpful, accurate, and always cite your sources. If you cannot find the answer in the provided documents, say so clearly rather than guessing.`;
+}
 
 export async function POST(req: Request) {
   try {
-    const { messages, documentContext } = await req.json();
+    const { messages } = await req.json();
 
-    // Build context from retrieved documents
-    let contextSection = "";
-    if (documentContext && documentContext.length > 0) {
-      contextSection = `\n\n## Document Context\n\nThe following excerpts from official HOA documents are relevant to the user's question:\n\n${documentContext
-        .map(
-          (doc: { title: string; content: string; section?: string }) =>
-            `### ${doc.title}${doc.section ? ` - ${doc.section}` : ""}\n${doc.content}`
-        )
-        .join("\n\n---\n\n")}`;
-    } else {
-      contextSection = `\n\n## Document Context\n\nNo specific document context was provided. Base your response on general HOA knowledge while being clear that you cannot cite specific Westlake Village HOA documents without the proper context. Encourage the user to ask about specific topics like insurance, collections, enforcement, or records requests.`;
-    }
+    // Get the latest user message to build context
+    const userMessages = messages.filter(
+      (m: { role: string }) => m.role === "user"
+    );
+    const lastUserMessage = userMessages[userMessages.length - 1];
+    const query = lastUserMessage?.content || "";
+
+    // Build dynamic context based on the user's query
+    const context = buildAIContext(query);
+
+    // Log context stats for debugging
+    console.log(
+      `AI Context: ${context.documents.length} docs, ${context.totalChars.toLocaleString()} chars, ${context.relevantTopics.length} relevant topics`
+    );
 
     const result = streamText({
       model: anthropic("claude-sonnet-4-20250514"),
-      system: SYSTEM_PROMPT + contextSection,
+      system: buildSystemPrompt(context),
       messages,
       temperature: 0.3, // Lower temperature for more factual responses
+      maxTokens: 2000,
     });
 
     return result.toDataStreamResponse();

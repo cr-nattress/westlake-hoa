@@ -16,27 +16,15 @@ interface DocumentChatProps {
 
 export function DocumentChat({
   documentTitle,
-  documentSummary,
-  documentType,
 }: DocumentChatProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Prepare document context for the AI
-  const documentContext = [
-    {
-      title: documentTitle,
-      content: documentSummary || "No summary available.",
-      section: documentType,
-    },
-  ];
-
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop } =
+  // Document context is built server-side based on the query
+  // The AI will prioritize documents matching keywords in the question
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       api: "/api/chat",
-      body: {
-        documentContext,
-      },
     });
 
   // Auto-scroll to bottom when new messages arrive

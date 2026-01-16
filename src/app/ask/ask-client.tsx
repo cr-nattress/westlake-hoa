@@ -13,64 +13,12 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AIChat, SuggestedQuestions } from "@/components/chat";
 import { DISCLAIMERS } from "@/lib/constants";
 
-// Sample document context - in production, this would come from the database
-const SAMPLE_DOCUMENT_CONTEXT = [
-  {
-    title: "Responsible Governance Policies",
-    section: "Section 2: Collections Policies & Procedures",
-    content: `Late Fees: The initial late fee is $50, escalating up to $250 per month for continued delinquency.
+// Document count passed from server component
+interface AskClientProps {
+  documentCount?: number;
+}
 
-Interest Rate: 8% annually on delinquent amounts.
-
-Payment Plans: The HOA must offer payment plans with a minimum term of 18 months before proceeding with collections.
-
-Foreclosure Protections: Per Colorado HB25-1043 (updated CCIOA), required mediation and mandatory notice timelines must be followed before any foreclosure action.`,
-  },
-  {
-    title: "Insurance Certificate 2025-2026",
-    section: "Coverage Summary",
-    content: `General Liability: $1,000,000 per occurrence
-Umbrella Liability: $10,000,000 (Greenwich Insurance Company)
-Property (Building): $22,460,000 Guaranteed Replacement Cost (American Alternative Insurance)
-Directors & Officers: $1,000,000 (Philadelphia Indemnity)
-Fidelity Bond: $400,000
-Workers Compensation: $1,000,000 per accident
-Property Deductible: $15,000`,
-  },
-  {
-    title: "Records Inspection Policy",
-    section: "Owner Rights",
-    content: `Under CCIOA, owners have the right to inspect:
-- Governing documents (declarations, bylaws, rules)
-- Meeting minutes and agendas
-- Financial statements and budgets
-- Insurance policies and certificates
-- Reserve study
-- Contracts and agreements
-- Ownership lists (with restrictions on commercial use)
-
-Response Timeline: The HOA must respond within 10 business days.
-
-Excluded Records: Attorney-client privileged communications, personnel files, ongoing litigation documents, and most executive session minutes.`,
-  },
-  {
-    title: "Covenant & Rule Enforcement Policy",
-    section: "Fine Caps and Procedures",
-    content: `Fine Caps:
-- Non-safety violations: Maximum $500
-- Health/safety violations: Unlimited fines permitted
-
-Enforcement Process:
-1. Notice of violation sent to owner
-2. Opportunity to cure (timeframe depends on violation type)
-3. Hearing rights for owners before fines are assessed
-4. Appeal process available
-
-All enforcement must follow the detailed procedures in this policy.`,
-  },
-];
-
-export function AskClient() {
+export function AskClient({ documentCount = 16 }: AskClientProps) {
   const [selectedQuestion, setSelectedQuestion] = useState<string | undefined>();
   const [chatKey, setChatKey] = useState(0);
 
@@ -89,7 +37,7 @@ export function AskClient() {
         <h1 className="text-3xl font-bold mb-2">HOA Document Assistant</h1>
         <p className="text-muted-foreground max-w-xl mx-auto">
           Ask questions about HOA documents, policies, and procedures. I&apos;ll
-          search official documents and provide answers with source citations.
+          search through {documentCount} official documents and provide answers with source citations.
         </p>
       </div>
 
@@ -101,12 +49,11 @@ export function AskClient() {
         </AlertDescription>
       </Alert>
 
-      {/* AI Chat */}
+      {/* AI Chat - Context is built server-side in API route based on query */}
       <div className="mb-8">
         <AIChat
           key={chatKey}
           initialMessage={selectedQuestion}
-          documentContext={SAMPLE_DOCUMENT_CONTEXT}
         />
       </div>
 

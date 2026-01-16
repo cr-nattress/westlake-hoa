@@ -1,6 +1,8 @@
 import type { Document, DocumentType, DocumentStatus } from "@/types/database";
+import { loadDocumentContent } from "./load-document-content";
 
 // Documents with links to actual PDFs in /public/docs
+// Content is loaded from markdown files in docs/hoa-docs/readme/
 const MOCK_DOCUMENTS: Document[] = [
   // Governing Documents
   {
@@ -9,7 +11,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "declaration-of-condominium",
     type: "declaration",
     status: "current",
-    content: null,
+    content: loadDocumentContent("/docs/DeclarationofCondominium.pdf"),
     summary:
       "The original Declaration of Condominium establishing Westlake Village Condominium Association. This foundational document defines unit boundaries, common elements, and the basic governance structure.",
     file_url: "/docs/DeclarationofCondominium.pdf",
@@ -24,7 +26,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "bylaws",
     type: "bylaw",
     status: "current",
-    content: null,
+    content: loadDocumentContent("/docs/WestlakeBylaws.pdf"),
     summary:
       "The Bylaws of Westlake Village Condominium Association governing meetings, voting, board elections, and association operations.",
     file_url: "/docs/WestlakeBylaws.pdf",
@@ -39,7 +41,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "articles-of-incorporation-1979",
     type: "declaration",
     status: "current",
-    content: null,
+    content: loadDocumentContent("/docs/Articles of Incorporation 1979.pdf"),
     summary:
       "Original Articles of Incorporation filed in 1979 establishing Westlake Village Condominium Association as a Colorado nonprofit corporation.",
     file_url: "/docs/Articles of Incorporation 1979.pdf",
@@ -54,7 +56,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "rules-and-regulations-2018",
     type: "rule",
     status: "current",
-    content: null,
+    content: loadDocumentContent("/docs/2018.10 WLV Rules and Regs.pdf"),
     summary:
       "Community rules and regulations adopted October 2018 covering parking, pets, noise, common areas, and general conduct within Westlake Village.",
     file_url: "/docs/2018.10 WLV Rules and Regs.pdf",
@@ -71,10 +73,13 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "responsible-governance-policies-2025",
     type: "policy",
     status: "current",
-    content: null,
+    content: loadDocumentContent(
+      "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf"
+    ),
     summary:
       "Comprehensive policies covering collections, enforcement, meetings, conflicts of interest, and records inspection. Adopted November 2025. Prepared by Alpenglow Law, LLC.",
-    file_url: "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf",
+    file_url:
+      "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf",
     file_path: null,
     published_at: "2025-11-20T00:00:00Z",
     created_at: "2025-11-20T00:00:00Z",
@@ -86,10 +91,13 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "collections-policy-2025",
     type: "policy",
     status: "current",
-    content: null,
+    content: loadDocumentContent(
+      "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf"
+    ),
     summary:
       "Procedures for assessment collection, late fees ($50-$250), payment plans (18+ months), interest (8%), and foreclosure protections under Colorado CCIOA (HB25-1043). Part of Responsible Governance Policies.",
-    file_url: "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf",
+    file_url:
+      "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf",
     file_path: null,
     published_at: "2025-11-20T00:00:00Z",
     created_at: "2025-11-20T00:00:00Z",
@@ -101,10 +109,13 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "enforcement-policy-2025",
     type: "policy",
     status: "current",
-    content: null,
+    content: loadDocumentContent(
+      "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf"
+    ),
     summary:
       "Detailed enforcement procedures including notice requirements, hearing rights, fine caps ($500 for non-safety, unlimited for health/safety), and appeal processes. Part of Responsible Governance Policies.",
-    file_url: "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf",
+    file_url:
+      "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf",
     file_path: null,
     published_at: "2025-11-20T00:00:00Z",
     created_at: "2025-11-20T00:00:00Z",
@@ -116,10 +127,13 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "records-inspection-policy-2025",
     type: "policy",
     status: "current",
-    content: null,
+    content: loadDocumentContent(
+      "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf"
+    ),
     summary:
       "Owner rights to inspect association records under CCIOA, request procedures, 10-day response timeline, and categories of restricted records. Part of Responsible Governance Policies.",
-    file_url: "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf",
+    file_url:
+      "/docs/Westlake Village HOA - Responsible Governance Policies - Updated November 2025 - CLEAN - signed.pdf",
     file_path: null,
     published_at: "2025-11-20T00:00:00Z",
     created_at: "2025-11-20T00:00:00Z",
@@ -133,7 +147,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "insurance-certificate-2025-2026",
     type: "insurance",
     status: "current",
-    content: null,
+    content: loadDocumentContent("/docs/25-26 UO Certificate.pdf"),
     summary:
       "Annual insurance certificate showing coverage limits for property ($22.4M), liability ($1M), D&O ($1M), and umbrella ($10M) policies. Policy period October 2025 to October 2026.",
     file_url: "/docs/25-26 UO Certificate.pdf",
@@ -148,7 +162,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "insurance-ready-reference-2025-2026",
     type: "insurance",
     status: "current",
-    content: null,
+    content: loadDocumentContent("/docs/25-26 Property Manager Reference Sheet.pdf"),
     summary:
       "Quick reference guide for claims (claims@mtnwst.com, 970-945-9111), certificate requests, and insurance service team contacts at Mountain West Insurance.",
     file_url: "/docs/25-26 Property Manager Reference Sheet.pdf",
@@ -163,7 +177,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "unit-owners-letter-2025-2026",
     type: "insurance",
     status: "current",
-    content: null,
+    content: loadDocumentContent("/docs/25-26 UO Letter - Single Entity.pdf"),
     summary:
       "Single entity coverage letter explaining what the HOA master policy covers and what individual unit owners are responsible for insuring.",
     file_url: "/docs/25-26 UO Letter - Single Entity.pdf",
@@ -180,7 +194,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "insurance-certificate-2024-2025",
     type: "insurance",
     status: "superseded",
-    content: null,
+    content: loadDocumentContent("/docs/24 -25 UO - Certficate.pdf"),
     summary:
       "Prior year insurance certificate. Policy period October 2024 to October 2025. Superseded by 2025-2026 certificate.",
     file_url: "/docs/24 -25 UO - Certficate.pdf",
@@ -195,7 +209,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "insurance-ready-reference-2024-2025",
     type: "insurance",
     status: "superseded",
-    content: null,
+    content: loadDocumentContent("/docs/24 -25  Property Manager Reference Sheet.pdf"),
     summary:
       "Prior year property manager reference sheet with claims contacts and procedures. Superseded by 2025-2026 version.",
     file_url: "/docs/24 -25  Property Manager Reference Sheet.pdf",
@@ -210,7 +224,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "unit-owners-letter-2024-2025",
     type: "insurance",
     status: "superseded",
-    content: null,
+    content: loadDocumentContent("/docs/24 -25 UO Letter - Single Entity.pdf"),
     summary:
       "Prior year single entity coverage letter. Superseded by 2025-2026 version.",
     file_url: "/docs/24 -25 UO Letter - Single Entity.pdf",
@@ -225,7 +239,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "umbrella-liability-2024-2025",
     type: "insurance",
     status: "superseded",
-    content: null,
+    content: loadDocumentContent("/docs/24 -25 Umbrella.pdf"),
     summary:
       "Umbrella liability coverage certificate providing $10M excess liability coverage. Policy period 2024-2025.",
     file_url: "/docs/24 -25 Umbrella.pdf",
@@ -240,7 +254,7 @@ const MOCK_DOCUMENTS: Document[] = [
     slug: "do-liability-2024-2025",
     type: "insurance",
     status: "superseded",
-    content: null,
+    content: loadDocumentContent("/docs/24-25 Directors & Officers Liab &.Data.pdf"),
     summary:
       "Directors & Officers liability and data breach coverage certificate. $1M coverage for board members and association leadership. Policy period 2024-2025.",
     file_url: "/docs/24-25 Directors & Officers Liab &.Data.pdf",

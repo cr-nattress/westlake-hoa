@@ -7,6 +7,8 @@ export const SITE_CONFIG = {
 
 export const NAV_ITEMS = [
   { href: "/", label: "Home", icon: "Home" },
+  { href: "/answers", label: "Quick Answers", icon: "HelpCircle" },
+  { href: "/faq", label: "FAQ", icon: "CircleHelp" },
   { href: "/documents", label: "Documents", icon: "FileText" },
   { href: "/ask", label: "Ask AI", icon: "MessageSquare" },
   { href: "/meetings", label: "Meetings", icon: "Calendar" },
