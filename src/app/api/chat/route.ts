@@ -10,10 +10,18 @@ import {
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+// Type for attached document from client
+interface AttachedDocument {
+  name: string;
+  type: string;
+  content: string;
+  size: number;
+}
+
 /**
  * Build enhanced system prompt with document context
  */
-function buildSystemPrompt(context: AIContextResult): string {
+function buildSystemPrompt(context: AIContextResult, attachedDocument?: AttachedDocument): string {
   const contextSection = formatContextForPrompt(context);
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
@@ -102,14 +110,38 @@ ${DISCLAIMERS.ai}
 
 ${contextSection}
 
+${attachedDocument ? `
 ---
 
-Remember: Only answer based on the documents above. Be helpful, accurate, and always cite your sources. If you cannot find the answer in the provided documents, say so clearly rather than guessing.`;
+## USER-UPLOADED DOCUMENT
+
+The user has uploaded a document for analysis. This document takes priority for answering the user's current question.
+
+**Uploaded Document:** ${attachedDocument.name}
+**File Type:** ${attachedDocument.type}
+**Size:** ${(attachedDocument.size / 1024).toFixed(1)} KB
+
+### Document Content:
+\`\`\`
+${attachedDocument.content}
+\`\`\`
+
+When responding about this uploaded document:
+1. Focus primarily on the uploaded document content
+2. You may reference HOA documents above for additional context if relevant
+3. Clearly distinguish between information from the uploaded document vs. HOA documents
+4. If the uploaded document appears to be an HOA-related document, analyze it in that context
+` : ''}
+---
+
+Remember: ${attachedDocument
+  ? 'The user has uploaded a document for you to analyze. Focus on answering questions about that document, while using HOA documents for additional context when relevant.'
+  : 'Only answer based on the documents above. Be helpful, accurate, and always cite your sources. If you cannot find the answer in the provided documents, say so clearly rather than guessing.'}`;
 }
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages, attachedDocument } = await req.json();
 
     // Get the latest user message to build context
     const userMessages = messages.filter(
@@ -123,12 +155,12 @@ export async function POST(req: Request) {
 
     // Log context stats for debugging
     console.log(
-      `AI Context: ${context.documents.length} docs, ${context.totalChars.toLocaleString()} chars, ${context.relevantTopics.length} relevant topics`
+      `AI Context: ${context.documents.length} docs, ${context.totalChars.toLocaleString()} chars, ${context.relevantTopics.length} relevant topics${attachedDocument ? `, uploaded: ${attachedDocument.name}` : ''}`
     );
 
     const result = streamText({
       model: anthropic("claude-sonnet-4-20250514"),
-      system: buildSystemPrompt(context),
+      system: buildSystemPrompt(context, attachedDocument as AttachedDocument | undefined),
       messages,
       temperature: 0.3, // Lower temperature for more factual responses
       maxTokens: 2000,

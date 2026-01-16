@@ -8,6 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useFileUpload } from "@/hooks/use-file-upload";
+import { FileUpload, FileUploadIndicator, DropZoneOverlay } from "@/components/chat/file-upload";
 
 interface AIChatProps {
   initialMessage?: string;
@@ -17,6 +19,20 @@ export function AIChat({ initialMessage }: AIChatProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // File upload hook
+  const {
+    file,
+    document: attachedDocument,
+    error: fileError,
+    isLoading: isFileLoading,
+    selectFile,
+    clearFile,
+    handleDrop,
+    handleDragOver,
+    isDragging,
+    setIsDragging,
+  } = useFileUpload();
+
   // Document context is built server-side in the API route based on each query
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop } =
     useChat({
@@ -24,6 +40,16 @@ export function AIChat({ initialMessage }: AIChatProps) {
       initialMessages: initialMessage
         ? [{ id: "initial", role: "user" as const, content: initialMessage }]
         : [],
+      body: attachedDocument
+        ? {
+            attachedDocument: {
+              name: attachedDocument.name,
+              type: attachedDocument.type,
+              content: attachedDocument.content,
+              size: attachedDocument.size,
+            },
+          }
+        : undefined,
     });
 
   // Auto-scroll to bottom when new messages arrive
@@ -47,21 +73,48 @@ export function AIChat({ initialMessage }: AIChatProps) {
     }
   };
 
+  // Custom submit handler that clears the attached file after sending
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (input.trim() && !isLoading) {
+      handleSubmit(e);
+      // Clear the attached file after sending
+      if (attachedDocument) {
+        clearFile();
+      }
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+      }
+    }
+  };
+
   // Handle Enter key (submit on Enter, new line on Shift+Enter)
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (input.trim() && !isLoading) {
-        handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
-        if (textareaRef.current) {
-          textareaRef.current.style.height = "auto";
-        }
+        handleFormSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
       }
     }
   };
 
+  // Handle drag leave to stop showing overlay
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
   return (
-    <Card className="flex flex-col h-[500px] md:h-[600px]">
+    <Card
+      className="flex flex-col h-[500px] md:h-[600px] relative"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {/* Drag and drop overlay */}
+      <DropZoneOverlay isDragging={isDragging} />
+
       {/* Messages Area */}
       <ScrollArea ref={scrollAreaRef} className="flex-1 min-h-0 p-4">
         {messages.length === 0 ? (
@@ -128,14 +181,43 @@ export function AIChat({ initialMessage }: AIChatProps) {
 
       {/* Input Area */}
       <div className="border-t p-4">
-        <form onSubmit={handleSubmit} className="flex gap-2">
+        {/* Attached file indicator */}
+        {attachedDocument && (
+          <div className="mb-3">
+            <FileUploadIndicator document={attachedDocument} onClear={clearFile} />
+          </div>
+        )}
+
+        {/* File error display */}
+        {fileError && !attachedDocument && (
+          <div className="mb-3 p-2 bg-destructive/10 text-destructive text-sm rounded-lg">
+            {fileError.message}
+          </div>
+        )}
+
+        <form onSubmit={handleFormSubmit} className="flex gap-2">
+          {/* File upload button */}
+          <div className="flex items-end">
+            {!attachedDocument && (
+              <FileUpload
+                file={file}
+                document={attachedDocument}
+                error={fileError}
+                isLoading={isFileLoading}
+                onSelectFile={selectFile}
+                onClearFile={clearFile}
+                disabled={isLoading}
+              />
+            )}
+          </div>
+
           <div className="flex-1 relative">
             <Textarea
               ref={textareaRef}
               value={input}
               onChange={handleTextareaChange}
               onKeyDown={handleKeyDown}
-              placeholder="Ask about HOA documents..."
+              placeholder={attachedDocument ? "Ask about the attached document..." : "Ask about HOA documents..."}
               className="min-h-[44px] max-h-[120px] resize-none pr-10"
               disabled={isLoading}
               rows={1}
@@ -165,7 +247,9 @@ export function AIChat({ initialMessage }: AIChatProps) {
           </div>
         </form>
         <p className="text-xs text-muted-foreground mt-2 text-center">
-          Press Enter to send, Shift+Enter for new line
+          {attachedDocument
+            ? "Document attached - ask your question"
+            : "Press Enter to send, Shift+Enter for new line"}
         </p>
       </div>
     </Card>

@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useFileUpload } from "@/hooks/use-file-upload";
+import { FileUpload, FileUploadIndicator, DropZoneOverlay } from "@/components/chat/file-upload";
 
 interface DocumentChatProps {
   documentTitle: string;
@@ -20,11 +22,35 @@ export function DocumentChat({
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // File upload hook
+  const {
+    file,
+    document: attachedDocument,
+    error: fileError,
+    isLoading: isFileLoading,
+    selectFile,
+    clearFile,
+    handleDrop,
+    handleDragOver,
+    isDragging,
+    setIsDragging,
+  } = useFileUpload();
+
   // Document context is built server-side based on the query
   // The AI will prioritize documents matching keywords in the question
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
       api: "/api/chat",
+      body: attachedDocument
+        ? {
+            attachedDocument: {
+              name: attachedDocument.name,
+              type: attachedDocument.type,
+              content: attachedDocument.content,
+              size: attachedDocument.size,
+            },
+          }
+        : undefined,
     });
 
   // Auto-scroll to bottom when new messages arrive
@@ -48,17 +74,36 @@ export function DocumentChat({
     }
   };
 
+  // Custom submit handler that clears the attached file after sending
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (input.trim() && !isLoading) {
+      handleSubmit(e);
+      // Clear the attached file after sending
+      if (attachedDocument) {
+        clearFile();
+      }
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "auto";
+      }
+    }
+  };
+
   // Handle Enter key
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (input.trim() && !isLoading) {
-        handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
-        if (textareaRef.current) {
-          textareaRef.current.style.height = "auto";
-        }
+        handleFormSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
       }
     }
+  };
+
+  // Handle drag leave to stop showing overlay
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
   };
 
   const suggestedQuestions = [
@@ -68,7 +113,15 @@ export function DocumentChat({
   ];
 
   return (
-    <div className="flex flex-col h-[400px]">
+    <div
+      className="flex flex-col h-[400px] relative"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {/* Drag and drop overlay */}
+      <DropZoneOverlay isDragging={isDragging} />
+
       {/* Messages Area */}
       <ScrollArea ref={scrollAreaRef} className="flex-1 min-h-0 -mx-4 px-4">
         {messages.length === 0 ? (
@@ -144,13 +197,43 @@ export function DocumentChat({
 
       {/* Input Area */}
       <div className="border-t pt-3 mt-3 -mx-4 px-4">
-        <form onSubmit={handleSubmit} className="flex gap-2">
+        {/* Attached file indicator */}
+        {attachedDocument && (
+          <div className="mb-2">
+            <FileUploadIndicator document={attachedDocument} onClear={clearFile} compact />
+          </div>
+        )}
+
+        {/* File error display */}
+        {fileError && !attachedDocument && (
+          <div className="mb-2 p-2 bg-destructive/10 text-destructive text-xs rounded-lg">
+            {fileError.message}
+          </div>
+        )}
+
+        <form onSubmit={handleFormSubmit} className="flex gap-2">
+          {/* File upload button */}
+          {!attachedDocument && (
+            <div className="flex items-end">
+              <FileUpload
+                file={file}
+                document={attachedDocument}
+                error={fileError}
+                isLoading={isFileLoading}
+                onSelectFile={selectFile}
+                onClearFile={clearFile}
+                disabled={isLoading}
+                compact
+              />
+            </div>
+          )}
+
           <Textarea
             ref={textareaRef}
             value={input}
             onChange={handleTextareaChange}
             onKeyDown={handleKeyDown}
-            placeholder="Ask a question..."
+            placeholder={attachedDocument ? "Ask about the attached file..." : "Ask a question..."}
             className="min-h-[40px] max-h-[100px] resize-none text-sm"
             disabled={isLoading}
             rows={1}
