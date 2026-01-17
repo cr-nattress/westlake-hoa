@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { HOAIdentity } from "@/components/hoa-identity";
 import { DISCLAIMERS, SITE_CONFIG } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -75,6 +76,11 @@ export default function AboutPage() {
           </p>
         </CardContent>
       </Card>
+
+      {/* HOA Identity */}
+      <div className="mb-8">
+        <HOAIdentity />
+      </div>
 
       {/* Disclaimer */}
       <Alert

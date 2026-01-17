@@ -8,6 +8,16 @@
 
 import { getAllDocuments } from "@/lib/data/documents";
 import { findTopicsByKeyword } from "@/lib/data/topic-index";
+import {
+  HOA_IDENTITY,
+  CONTACTS,
+  BOARD_MEMBERS,
+  BOARD_AUTHORITY,
+  ENFORCEMENT_PATH,
+  PROPERTY_MANAGEMENT,
+  LEGAL_COUNSEL,
+  INSURANCE_BROKER,
+} from "@/lib/data/institutional-knowledge";
 import type { Document } from "@/types/database";
 
 // Context size limits
@@ -34,6 +44,134 @@ export interface AIContextResult {
   documents: DocumentContext[];
   relevantTopics: RelevantTopic[];
   totalChars: number;
+  institutionalContext?: string;
+}
+
+// Keywords that trigger institutional knowledge inclusion
+const CONTACT_KEYWORDS = [
+  "contact",
+  "who",
+  "call",
+  "email",
+  "reach",
+  "phone",
+  "address",
+  "management",
+  "manager",
+  "bold",
+  "attorney",
+  "lawyer",
+  "legal",
+  "counsel",
+  "alpenglow",
+  "insurance",
+  "broker",
+  "mountain west",
+  "claims",
+];
+
+const GOVERNANCE_KEYWORDS = [
+  "board",
+  "president",
+  "vote",
+  "decision",
+  "authority",
+  "governance",
+  "enforcement",
+  "escalat",
+  "violation",
+  "fine",
+  "hearing",
+  "appeal",
+  "matz",
+];
+
+/**
+ * Build institutional knowledge context string.
+ * Includes HOA identity, contacts, board info, and enforcement details.
+ */
+export function buildInstitutionalContext(query: string): string | undefined {
+  const queryLower = query.toLowerCase();
+
+  const needsContactInfo = CONTACT_KEYWORDS.some((kw) =>
+    queryLower.includes(kw)
+  );
+  const needsGovernanceInfo = GOVERNANCE_KEYWORDS.some((kw) =>
+    queryLower.includes(kw)
+  );
+
+  if (!needsContactInfo && !needsGovernanceInfo) {
+    return undefined;
+  }
+
+  let context = `## Institutional Knowledge\n\n`;
+
+  // Always include HOA identity for governance/contact queries
+  context += `### HOA Identity
+- **Legal Name:** ${HOA_IDENTITY.legalName}
+- **DBA:** ${HOA_IDENTITY.dba}
+- **Type:** ${HOA_IDENTITY.entityType}
+- **Units:** Approximately ${HOA_IDENTITY.totalUnits} units
+- **Property:** ${HOA_IDENTITY.propertyName}
+- **Jurisdiction:** ${HOA_IDENTITY.jurisdiction.join(", ")}
+
+`;
+
+  // Add contact information
+  if (needsContactInfo) {
+    context += `### Key Contacts
+
+**Property Management: ${PROPERTY_MANAGEMENT.name}**
+- Role: ${PROPERTY_MANAGEMENT.role}
+- Mailing Address: PO Box 5800, Avon, CO 81620
+- Email domains: ${PROPERTY_MANAGEMENT.emailDomains?.join(", ")}
+- Platform: ${PROPERTY_MANAGEMENT.platforms?.join(", ")}
+- Responsibilities: ${PROPERTY_MANAGEMENT.responsibilities?.slice(0, 6).join(", ")}
+
+**Legal Counsel: ${LEGAL_COUNSEL.name}**
+- Role: ${LEGAL_COUNSEL.role}
+- Attorney: T.J. Voboril, Esq.
+- Notes: ${LEGAL_COUNSEL.notes?.join("; ")}
+
+**Insurance Broker: ${INSURANCE_BROKER.name}**
+- Email: ${INSURANCE_BROKER.email}
+- Phone: ${INSURANCE_BROKER.phone}
+
+**Who to Contact:**
+- Maintenance, assessments, general questions → Property Management (Bold Solutions)
+- Insurance claims → Mountain West Insurance (${INSURANCE_BROKER.email})
+- Legal matters are typically escalated through Property Management to Legal Counsel
+- The Board does not have direct public contact
+
+`;
+  }
+
+  // Add governance information
+  if (needsGovernanceInfo) {
+    context += `### Board of Directors
+${BOARD_MEMBERS.map((m) => `- **${m.name}**: ${m.position} (as of ${m.asOfDate})`).join("\n")}
+
+**Board Authority:**
+${BOARD_AUTHORITY.powers.map((p) => `- ${p}`).join("\n")}
+
+**Decision Making:**
+The Board may act through: ${BOARD_AUTHORITY.decisionMaking.methods.join(" or ")}.
+
+Votes must be recorded for: ${BOARD_AUTHORITY.decisionMaking.recordedVotes.join(", ")}.
+
+### Enforcement Escalation Path
+${ENFORCEMENT_PATH.map((s) => `${s.step}. **${s.entity}** - ${s.action}: ${s.description}`).join("\n")}
+
+**Key Enforcement Points:**
+- Owners have 5 days to request a hearing after receiving a fine
+- Non-safety violations are capped at $500 total
+- Health/safety violations have no fine cap
+- All fines require Board authorization
+
+`;
+  }
+
+  return context;
 }
 
 /**
@@ -115,6 +253,9 @@ export function buildAIContext(query: string): AIContextResult {
     totalChars += content.length;
   }
 
+  // Build institutional context if relevant
+  const institutionalContext = buildInstitutionalContext(query);
+
   return {
     documents,
     relevantTopics: relevantTopics.slice(0, 5).map((t) => ({
@@ -123,6 +264,7 @@ export function buildAIContext(query: string): AIContextResult {
       slug: t.slug,
     })),
     totalChars,
+    institutionalContext,
   };
 }
 
@@ -194,17 +336,29 @@ export function getDocumentContext(slug: string): DocumentContext | null {
  * Returns a formatted string suitable for inclusion in the prompt.
  */
 export function formatContextForPrompt(context: AIContextResult): string {
-  if (context.documents.length === 0) {
+  let formatted = "";
+
+  // Add institutional context first if available
+  if (context.institutionalContext) {
+    formatted += context.institutionalContext + "\n---\n\n";
+  }
+
+  if (context.documents.length === 0 && !context.institutionalContext) {
     return `## Document Context
 
 No specific document context available. Please encourage the user to ask about specific topics like:
 - Financial: assessments, late fees, payment plans
 - Insurance: coverage, claims, deductibles
 - Rules: pets, parking, noise, renovations
-- Governance: voting, meetings, records, violations`;
+- Governance: voting, meetings, records, violations
+- Contacts: who to contact, property management, legal counsel`;
   }
 
-  let formatted = `## Document Context
+  if (context.documents.length === 0) {
+    return formatted;
+  }
+
+  formatted += `## Document Context
 
 The following excerpts from official HOA documents are available for reference:
 

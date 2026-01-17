@@ -86,3 +86,21 @@ export interface NavItem {
   label: string;
   icon: string;
 }
+
+// Re-export institutional knowledge types
+export type {
+  Address,
+  HOAIdentity,
+  ContactType,
+  ContactEntity,
+  BoardMember,
+  BoardAuthority,
+  TransparencyCategory,
+  CommunicationPattern,
+  TransparencyIssue,
+  RecordsComparison,
+  EnforcementStep,
+  HistoricalEntity,
+  KnowledgeBaseMetadata,
+  InstitutionalKnowledge,
+} from "./institutional";

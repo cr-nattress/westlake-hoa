@@ -6,6 +6,9 @@ import {
   Info,
   FileText,
   ExternalLink,
+  Users,
+  Building2,
+  Eye,
 } from "lucide-react";
 import {
   Card,
@@ -22,6 +25,22 @@ export const metadata: Metadata = {
 
 const links = [
   {
+    title: "Key Contacts",
+    description: "Property management, legal counsel, and insurance contacts",
+    href: "/contacts",
+    icon: Users,
+    color: "text-blue-600 dark:text-blue-400",
+    bgColor: "bg-blue-100 dark:bg-blue-900",
+  },
+  {
+    title: "Governance",
+    description: "Board authority, decision-making, and enforcement",
+    href: "/governance",
+    icon: Building2,
+    color: "text-purple-600 dark:text-purple-400",
+    bgColor: "bg-purple-100 dark:bg-purple-900",
+  },
+  {
     title: "Insurance Guide",
     description: "Understand HOA coverage and owner responsibilities",
     href: "/insurance",
@@ -36,6 +55,14 @@ const links = [
     icon: FolderOpen,
     color: "text-orange-600 dark:text-orange-400",
     bgColor: "bg-orange-100 dark:bg-orange-900",
+  },
+  {
+    title: "Transparency",
+    description: "Documented communication patterns and accountability",
+    href: "/transparency",
+    icon: Eye,
+    color: "text-amber-600 dark:text-amber-400",
+    bgColor: "bg-amber-100 dark:bg-amber-900",
   },
   {
     title: "About This Site",
