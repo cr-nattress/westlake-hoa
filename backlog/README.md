@@ -16,16 +16,16 @@ An unofficial, homeowner-run transparency website providing clear, lawful, and n
 
 | Epic | Name | Phase | Priority | Status |
 |------|------|-------|----------|--------|
-| 0 | Project Foundation | 0 | Critical | Not Started |
-| 1 | Home Page & Navigation | 1 | Critical | Not Started |
-| 2 | Document Library | 1 | Critical | Not Started |
-| 3 | AI Assistant | 1 | Critical | Not Started |
-| 4 | Meetings & Decisions | 2 | High | Not Started |
-| 5 | Insurance Section | 2 | High | Not Started |
-| 6 | Records Request Guide | 2 | High | Not Started |
+| 0 | Project Foundation | 0 | Critical | Complete |
+| 1 | Home Page & Navigation | 1 | Critical | Complete |
+| 2 | Document Library | 1 | Critical | Complete |
+| 3 | AI Assistant | 1 | Critical | Complete |
+| 4 | Meetings & Decisions | 2 | High | In Progress |
+| 5 | Insurance Section | 2 | High | Complete |
+| 6 | Records Request Guide | 2 | High | Complete |
 | 7 | Polish & Performance | 3 | Medium | Not Started |
-| 8 | Document Intelligence & AI Enhancement | 2 | High | Not Started |
-| 9 | Knowledge Base Integration | 2 | High | Not Started |
+| 8 | Document Intelligence & AI Enhancement | 2 | High | Complete |
+| 9 | Knowledge Base Integration | 2 | High | Complete |
 
 ---
 
