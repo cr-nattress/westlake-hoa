@@ -193,3 +193,59 @@ export interface ManagementAuthorityData {
   accountabilityStatement: string;
   accessRequirements: string[];
 }
+
+// =============================================================================
+// Epic 12: Contact Directory Types
+// =============================================================================
+
+/**
+ * Email contact with purpose
+ */
+export interface EmailContact {
+  address: string;
+  purpose: string;
+}
+
+/**
+ * Phone contact with purpose
+ */
+export interface PhoneContact {
+  number: string;
+  purpose: string;
+}
+
+/**
+ * Key contact person
+ */
+export interface KeyContact {
+  name: string;
+  title: string;
+  email?: string;
+  phone?: string;
+  asOf?: string;
+}
+
+/**
+ * Website/portal link
+ */
+export interface WebsiteLink {
+  url: string;
+  label: string;
+}
+
+/**
+ * Full contact entity with comprehensive details
+ */
+export interface ContactEntityFull {
+  name: string;
+  role: string;
+  type: ContactType;
+  emails?: EmailContact[];
+  phones?: PhoneContact[];
+  faxes?: PhoneContact[];
+  address?: Address;
+  website?: WebsiteLink;
+  keyContacts?: KeyContact[];
+  notes?: string[];
+  responsibilities?: string[];
+}

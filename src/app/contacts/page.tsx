@@ -1,4 +1,6 @@
-import { Metadata } from "next";
+"use client";
+
+import { useState } from "react";
 import { Users, AlertCircle, MapPin } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
@@ -8,10 +10,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ContactCard } from "@/components/contact-card";
+import { ContactCardFull } from "@/components/contact-card-full";
+import { ContactSearch } from "@/components/contact-search";
+import { WhenToContact } from "@/components/when-to-contact";
 import { AddressDisplay } from "@/components/address-display";
 import {
-  CONTACTS,
+  ALL_CONTACTS,
+  searchContacts,
+  filterContactsByType,
+} from "@/lib/data/contact-directory";
+import {
   HOA_MAILING_ADDRESS,
   HOA_PRIMARY_ADDRESS,
   HISTORICAL_MANAGEMENT,
@@ -19,13 +27,19 @@ import {
 } from "@/lib/data/institutional-knowledge";
 import { DISCLAIMERS } from "@/lib/constants";
 
-export const metadata: Metadata = {
-  title: "Key Contacts",
-  description:
-    "Contact information for Westlake Village HOA property management, legal counsel, and insurance broker.",
-};
-
 export default function ContactsPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("all");
+
+  // Apply search and filter
+  let filteredContacts = ALL_CONTACTS;
+  if (searchQuery) {
+    filteredContacts = searchContacts(filteredContacts, searchQuery);
+  }
+  if (filterType !== "all") {
+    filteredContacts = filterContactsByType(filteredContacts, filterType);
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       {/* Header */}
@@ -35,7 +49,7 @@ export default function ContactsPage() {
             <Users className="h-6 w-6 text-slate-600 dark:text-slate-400" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold">Key Contacts</h1>
+            <h1 className="text-3xl font-bold">Contact Directory</h1>
             <p className="text-muted-foreground">
               Find the right contact for your HOA needs
             </p>
@@ -54,120 +68,87 @@ export default function ContactsPage() {
         </AlertDescription>
       </Alert>
 
-      {/* Contact Cards Grid */}
-      <div className="grid gap-6 md:grid-cols-2 mb-8">
-        {CONTACTS.map((contact) => (
-          <ContactCard
-            key={contact.name}
-            contact={contact}
-            showResponsibilities={contact.type === "management"}
-            showNotes={true}
-          />
-        ))}
+      {/* When to Contact Guide */}
+      <WhenToContact />
 
-        {/* HOA Mailing Address Card */}
-        <Card className="h-full">
+      {/* Search and Filter */}
+      <ContactSearch
+        onSearchChange={setSearchQuery}
+        onFilterChange={setFilterType}
+      />
+
+      {/* Contact Cards Grid */}
+      {filteredContacts.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 mb-8">
+          {filteredContacts.map((contact) => (
+            <ContactCardFull key={contact.name} contact={contact} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12 mb-8">
+          <p className="text-muted-foreground">
+            No contacts found matching your search.
+          </p>
+        </div>
+      )}
+
+      {/* HOA Mailing Address Card */}
+      {(filterType === "all" || filterType === "board") && !searchQuery && (
+        <Card className="mb-8">
           <CardHeader>
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                 <MapPin className="h-5 w-5 text-slate-600 dark:text-slate-400" />
               </div>
               <div>
-                <CardTitle className="text-lg">HOA Mailing Address</CardTitle>
+                <CardTitle className="text-lg">HOA Mailing Addresses</CardTitle>
                 <CardDescription>
-                  Primary address for correspondence
+                  Official addresses for correspondence
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-1">
-                Primary Address
-              </h4>
-              <AddressDisplay address={HOA_PRIMARY_ADDRESS} />
-            </div>
+          <CardContent>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div>
+                <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                  Primary Address
+                </h4>
+                <AddressDisplay address={HOA_PRIMARY_ADDRESS} />
+              </div>
 
-            <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-1">
-                Mailing Address
-              </h4>
-              <AddressDisplay address={HOA_MAILING_ADDRESS} />
-            </div>
+              <div>
+                <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                  Mailing Address
+                </h4>
+                <AddressDisplay address={HOA_MAILING_ADDRESS} />
+              </div>
 
-            <div className="pt-4 border-t">
-              <h4 className="text-sm font-medium text-muted-foreground mb-1">
-                Historical Address
-              </h4>
-              <p className="text-xs text-muted-foreground mb-1">
-                ({HISTORICAL_MANAGEMENT.note})
-              </p>
-              <p className="text-sm">{HISTORICAL_MANAGEMENT.name}</p>
-              {HISTORICAL_MANAGEMENT.address && (
-                <AddressDisplay
-                  address={HISTORICAL_MANAGEMENT.address}
-                  className="text-muted-foreground"
-                />
-              )}
+              <div className="sm:col-span-2 pt-4 border-t">
+                <h4 className="text-sm font-medium text-muted-foreground mb-1">
+                  Historical Address
+                </h4>
+                <p className="text-xs text-muted-foreground mb-1">
+                  ({HISTORICAL_MANAGEMENT.note})
+                </p>
+                <p className="text-sm">{HISTORICAL_MANAGEMENT.name}</p>
+                {HISTORICAL_MANAGEMENT.address && (
+                  <AddressDisplay
+                    address={HISTORICAL_MANAGEMENT.address}
+                    className="text-muted-foreground"
+                  />
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
-      </div>
-
-      {/* Quick Reference Guide */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Who to Contact</CardTitle>
-          <CardDescription>
-            Quick guide for common questions and issues
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-3">
-              <h4 className="font-medium text-sm">
-                Contact Property Management for:
-              </h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
-                <li>• Maintenance requests</li>
-                <li>• Unit access coordination</li>
-                <li>• Assessment questions</li>
-                <li>• Noise or violation reports</li>
-                <li>• General HOA questions</li>
-                <li>• Records requests</li>
-              </ul>
-            </div>
-
-            <div className="space-y-3">
-              <h4 className="font-medium text-sm">
-                Contact Insurance Broker for:
-              </h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
-                <li>• Filing insurance claims</li>
-                <li>• Coverage questions</li>
-                <li>• Certificate requests</li>
-                <li>• Emergency damage reporting</li>
-              </ul>
-            </div>
-
-            <div className="space-y-3 sm:col-span-2">
-              <h4 className="font-medium text-sm">About Legal Counsel:</h4>
-              <p className="text-sm text-muted-foreground">
-                Legal counsel handles escalated matters only. Homeowners are
-                typically instructed to communicate through counsel once disputes
-                or legal matters are escalated by the Board. Initial contact
-                should go through property management.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      )}
 
       {/* Footer */}
       <div className="text-center text-sm text-muted-foreground">
         <p>Last updated: {KNOWLEDGE_BASE_METADATA.lastUpdated}</p>
         <p className="mt-1">
-          Source: Westlake HOA Knowledge Base
+          Contact information compiled from official HOA documents.
         </p>
       </div>
     </div>
