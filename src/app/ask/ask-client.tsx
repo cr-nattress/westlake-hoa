@@ -67,7 +67,7 @@ export function AskClient({ documentCount = 16 }: AskClientProps) {
         <CardHeader>
           <CardTitle>How It Works</CardTitle>
           <CardDescription>
-            Understanding how the AI assistant provides answers
+            Understanding how the assistant provides answers
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -88,10 +88,10 @@ export function AskClient({ documentCount = 16 }: AskClientProps) {
               <span className="text-sm font-semibold text-primary">2</span>
             </div>
             <div>
-              <h3 className="font-medium mb-1">AI Searches Documents</h3>
+              <h3 className="font-medium mb-1">Smart Document Search</h3>
               <p className="text-sm text-muted-foreground">
-                The AI searches through official HOA documents to find relevant
-                information.
+                The assistant searches through official HOA documents to find
+                relevant information.
               </p>
             </div>
           </div>

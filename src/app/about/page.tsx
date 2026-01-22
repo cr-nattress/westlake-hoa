@@ -26,7 +26,7 @@ const principles = [
   {
     title: "Document-First",
     description:
-      "Every claim must trace back to a source document. AI answers cite documents and specific sections.",
+      "Every claim must trace back to a source document. Answers cite documents and specific sections.",
   },
   {
     title: "Informational Only",
@@ -70,9 +70,9 @@ export default function AboutPage() {
           </p>
           <p>
             Our goal is to provide <strong>open and transparent communication</strong>{" "}
-            for all owners and tenants, with an AI-first interface that helps
-            residents understand complex governance information without replacing
-            legal counsel or official HOA channels.
+            for all owners and tenants, with an interface that helps residents
+            understand complex governance information without replacing legal
+            counsel or official HOA channels.
           </p>
         </CardContent>
       </Card>

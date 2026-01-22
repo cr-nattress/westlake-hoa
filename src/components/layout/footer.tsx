@@ -31,7 +31,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold mb-3">AI Assistant</h3>
+            <h3 className="font-semibold mb-3">Assistant</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/ask" className="hover:text-foreground transition-colors">Ask a Question</Link></li>
               <li><Link href="/ask#how-it-works" className="hover:text-foreground transition-colors">How It Works</Link></li>

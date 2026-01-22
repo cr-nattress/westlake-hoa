@@ -1,7 +1,7 @@
 export const SITE_CONFIG = {
   name: "Westlake HOA Hub",
   description:
-    "Unofficial, AI-powered information portal for the Westlake Village Condominium Association in Avon, Colorado.",
+    "Unofficial information portal for the Westlake Village Condominium Association in Avon, Colorado.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
 } as const;
 
@@ -10,7 +10,7 @@ export const NAV_ITEMS = [
   { href: "/answers", label: "Quick Answers", icon: "HelpCircle" },
   { href: "/faq", label: "FAQ", icon: "CircleHelp" },
   { href: "/documents", label: "Documents", icon: "FileText" },
-  { href: "/ask", label: "Ask AI", icon: "MessageSquare" },
+  { href: "/ask", label: "Assistant", icon: "MessageSquare" },
   { href: "/meetings", label: "Meetings", icon: "Calendar" },
   { href: "/insurance", label: "Insurance", icon: "Shield" },
   { href: "/contacts", label: "Contacts", icon: "Users" },
@@ -20,7 +20,7 @@ export const NAV_ITEMS = [
 export const MOBILE_NAV_ITEMS = [
   { href: "/", label: "Home", icon: "Home" },
   { href: "/documents", label: "Docs", icon: "FileText" },
-  { href: "/ask", label: "Ask AI", icon: "MessageSquare" },
+  { href: "/ask", label: "Assistant", icon: "MessageSquare" },
   { href: "/meetings", label: "Meetings", icon: "Calendar" },
   { href: "/more", label: "More", icon: "Menu" },
 ] as const;

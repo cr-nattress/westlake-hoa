@@ -192,13 +192,12 @@ export default async function FAQPage({ searchParams }: FAQPageProps) {
       <div className="mt-12 p-6 bg-muted/50 rounded-lg text-center">
         <h2 className="font-semibold mb-2">Still have questions?</h2>
         <p className="text-muted-foreground mb-4">
-          Our AI assistant can help answer specific questions about HOA
-          documents
+          Our assistant can help answer specific questions about HOA documents
         </p>
         <Button asChild>
           <Link href="/ask">
             <MessageSquare className="h-4 w-4 mr-2" />
-            Ask AI Assistant
+            Ask the Assistant
           </Link>
         </Button>
       </div>

@@ -162,7 +162,7 @@ export default function TransparencyPage() {
             </Link>
             <Link href="/ask">
               <Button variant="outline" className="w-full justify-between">
-                Ask AI Assistant
+                Ask the Assistant
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>

@@ -133,16 +133,16 @@ export default async function AnswersPage({ searchParams }: AnswersPageProps) {
         </div>
       )}
 
-      {/* CTA to AI */}
+      {/* CTA to Assistant */}
       <div className="mt-12 p-6 bg-muted/50 rounded-lg text-center">
         <h2 className="font-semibold mb-2">Can&apos;t find your answer?</h2>
         <p className="text-muted-foreground mb-4">
-          Ask our AI assistant for help with any HOA question
+          Ask our assistant for help with any HOA question
         </p>
         <Button asChild>
           <Link href="/ask">
             <MessageSquare className="h-4 w-4 mr-2" />
-            Go to AI Assistant
+            Go to Assistant
           </Link>
         </Button>
       </div>

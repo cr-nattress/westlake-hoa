@@ -195,12 +195,12 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
             {/* Related Documents */}
             <RelatedDocuments documents={relatedDocs} />
 
-            {/* AI Chat */}
+            {/* Document Chat */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">Ask About This Document</CardTitle>
                 <CardDescription className="text-xs">
-                  AI-powered assistance
+                  Get answers from this document
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -224,7 +224,7 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
                   <div>
                     <CardTitle>Full Document</CardTitle>
                     <CardDescription>
-                      AI-extracted content from the official PDF
+                      Extracted content from the official PDF
                     </CardDescription>
                   </div>
                   {document.file_url && (

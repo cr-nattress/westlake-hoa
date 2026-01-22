@@ -22,7 +22,7 @@ import { DISCLAIMERS } from "@/lib/constants";
 const features = [
   {
     icon: MessageSquare,
-    title: "Ask AI",
+    title: "Assistant",
     description:
       "Get instant answers about HOA policies, rules, and procedures with source citations.",
     href: "/ask",
@@ -109,8 +109,7 @@ export default function HomePage() {
             {/* Subheadline */}
             <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
               Clear, lawful, and neutral access to HOA documents, meetings, and
-              processes. Ask questions and get AI-powered answers with source
-              citations.
+              processes. Ask questions and get answers with source citations.
             </p>
 
             {/* CTA Buttons */}
@@ -118,7 +117,7 @@ export default function HomePage() {
               <Button asChild size="lg" className="text-base">
                 <Link href="/ask">
                   <MessageSquare className="mr-2 h-5 w-5" />
-                  Ask the HOA AI
+                  Ask the Assistant
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-base">
@@ -140,8 +139,8 @@ export default function HomePage() {
               Everything You Need to Know
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Access HOA information quickly with our AI-first interface. Every
-              answer cites official documents.
+              Access HOA information quickly. Every answer cites official
+              documents.
             </p>
           </div>
 
@@ -209,12 +208,12 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">
-                    AI Searches Documents
+                    Smart Document Search
                   </h3>
                   <p className="text-muted-foreground">
-                    Our AI searches through official HOA documents to find
-                    relevant information from declarations, bylaws, policies,
-                    and meeting minutes.
+                    The assistant searches through official HOA documents to
+                    find relevant information from declarations, bylaws,
+                    policies, and meeting minutes.
                   </p>
                 </div>
               </div>
