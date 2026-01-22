@@ -110,7 +110,7 @@ Comprehensive security hardening of the Westlake HOA website based on a deep sec
 ### 11.3 Implement API Rate Limiting
 
 ```typescript
-// Using Vercel KV or Upstash Redis
+// Using Upstash Redis (works with Netlify)
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
@@ -165,36 +165,24 @@ export const ChatRequestSchema = z.object({
 
 ### 11.5 Implement Security Headers
 
-```typescript
-// next.config.ts
-const securityHeaders = [
-  {
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https:",
-      "font-src 'self' data:",
-      "connect-src 'self' https://*.supabase.co https://api.anthropic.com",
-      "frame-ancestors 'none'",
-    ].join("; "),
-  },
-  { key: "X-Content-Type-Options", value: "nosniff" },
-  { key: "X-Frame-Options", value: "DENY" },
-  { key: "X-XSS-Protection", value: "1; mode=block" },
-  { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
-  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "geolocation=(), microphone=(), camera=()" },
-];
+Update `netlify.toml` to add missing security headers (CSP and HSTS):
 
-const nextConfig: NextConfig = {
-  reactCompiler: true,
-  async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
-  },
-};
+```toml
+# netlify.toml - Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    # Add these missing headers:
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests"
 ```
+
+**Note:** Some headers already exist in `netlify.toml`. Only CSP and HSTS need to be added.
 
 ### 11.6 Add Security Middleware
 
@@ -297,7 +285,8 @@ export function validateFileContent(
   - `zod` - Schema validation (already installed)
 
 - **Infrastructure:**
-  - Upstash Redis account (or Vercel KV)
+  - Upstash Redis account (free tier available)
+  - Netlify environment variables for Redis credentials
 
 ## Risks & Mitigations
 
