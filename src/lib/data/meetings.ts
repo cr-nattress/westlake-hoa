@@ -3,6 +3,17 @@ import type { Meeting, MeetingType } from "@/types/database";
 // Mock meetings for development
 const MOCK_MEETINGS: Meeting[] = [
   {
+    id: "6",
+    title: "Annual Meeting 2026",
+    type: "annual",
+    date: "2026-01-27T16:00:00Z",
+    location: "Zoom Meeting (Meeting ID: 853 7609 1591, Passcode: 322501)",
+    agenda: "A. Introduction of those in attendance and Proxy certification/Quorum\nB. Approval of 2024 meeting minutes\nC. Financial review and Approval of 2026 Proposed budget\nD. Current business\nE. New business\nF. Election of Directors\nG. Adjournment",
+    summary: "Notice issued January 12, 2026. If you cannot be present, please sign the membership proxy and email to: amy@boldsolutions.net. Meeting materials include: proxy form, Board application, and 2024 annual owner meeting minutes.",
+    created_at: "2026-01-12T00:00:00Z",
+    updated_at: "2026-01-12T00:00:00Z",
+  },
+  {
     id: "1",
     title: "Board Meeting - January 2026",
     type: "board",
