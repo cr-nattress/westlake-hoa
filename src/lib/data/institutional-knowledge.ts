@@ -14,6 +14,13 @@ import type {
   KnowledgeBaseMetadata,
   InstitutionalKnowledge,
   Address,
+  // Epic 10 types
+  DelegatedAuthority,
+  ManagementContact,
+  RecordsCustody,
+  ServiceGap,
+  EscalationStepEnhanced,
+  ManagementAuthorityData,
 } from "@/types/institutional";
 
 // =============================================================================
@@ -308,6 +315,196 @@ export const INSTITUTIONAL_KNOWLEDGE: InstitutionalKnowledge = {
   recordsComparison: RECORDS_COMPARISON,
   enforcementPath: ENFORCEMENT_PATH,
   metadata: KNOWLEDGE_BASE_METADATA,
+};
+
+// =============================================================================
+// Epic 10: Management Authority Data
+// =============================================================================
+
+export const BOLD_DELEGATED_AUTHORITY: DelegatedAuthority = {
+  powers: [
+    "Act as the HOA's managing agent",
+    "Receive and respond to owner communications",
+    "Maintain official HOA records",
+    "Coordinate records inspections",
+    "Send delinquency notices (First Contact / Notice of Delinquency)",
+    "Sign Notices of Assessment Lien (delegated authority)",
+    "Maintain contact and communication logs",
+    "Coordinate vendor services",
+    "Schedule and oversee maintenance",
+  ],
+  limitations: [
+    {
+      limitation: "Cannot independently initiate legal action",
+      requirement: "Requires Board authorization",
+    },
+    {
+      limitation:
+        "Cannot refer accounts to attorneys without a recorded Board vote",
+      requirement: "Board must record vote before collections referral",
+    },
+    {
+      limitation: "Cannot approve foreclosures",
+      requirement: "Requires explicit Board authorization and recorded vote",
+    },
+  ],
+};
+
+export const BOLD_SPECIFIC_EMAILS: ManagementContact[] = [
+  {
+    purpose: "General / Client Services",
+    email: "clientservices@boldsolutions.net",
+    notes: "Use for general property management correspondence",
+  },
+  {
+    purpose: "Mass Communications (Automated)",
+    email: "communications@boldpropertymanagement.mailer.appfolio.us",
+    notes:
+      "Automated notices via AppFolio (pest control, access, compliance). Often no-reply.",
+  },
+];
+
+export const BOLD_RECORDS_CUSTODY: RecordsCustody[] = [
+  {
+    recordType: "Financial records",
+    description: "HOA financial statements, budgets, and transaction records",
+  },
+  {
+    recordType: "Owner ledgers",
+    description: "Individual owner account records and payment history",
+  },
+  {
+    recordType: "Contracts",
+    description: "Vendor agreements and service contracts",
+  },
+  {
+    recordType: "Insurance documentation",
+    description: "Master policy documents and certificates of insurance",
+  },
+  {
+    recordType: "Board communications",
+    description: "Non-privileged Board correspondence and meeting notices",
+  },
+];
+
+export const RECORDS_ACCESS_REQUIREMENTS: string[] = [
+  "Provide records within statutory timelines",
+  "Coordinate inspections during normal business hours",
+  "Track and document owner communications",
+];
+
+export const SERVICE_GAPS: ServiceGap[] = [
+  {
+    item: "Management Agreement",
+    description: "Scope of services, fees, and termination terms",
+    impact: "Owners cannot verify what services are contracted",
+  },
+  {
+    item: "Assigned Staff Contact List",
+    description: "No designated staff member identified for Westlake",
+    impact: "Unclear who is directly responsible for the property",
+  },
+  {
+    item: "Service-Level Agreements (SLAs)",
+    description: "No documented response-time commitments",
+    impact: "Cannot hold management to specific response timelines",
+  },
+  {
+    item: "Internal Escalation Procedures",
+    description: "No documented escalation path within Bold",
+    impact: "Unclear how to escalate issues within the management company",
+  },
+];
+
+export const ACCOUNTABILITY_STATEMENT =
+  "Bold is not a passive administrator. Under governing documents and Colorado law, " +
+  "it functions as an operational extension of the HOA and carries compliance, records, " +
+  "and enforcement responsibilities. Delays, non-responses, or failures to act fall " +
+  "within this delegated role.";
+
+export const ESCALATION_FLOW: EscalationStepEnhanced[] = [
+  {
+    step: 1,
+    entity: "Bold Property Management",
+    action: "Initial Contact",
+    description: "Submit issue or request to property management",
+    authority: [
+      "Receive and respond to communications",
+      "Coordinate maintenance and vendors",
+      "Issue warnings and notices",
+    ],
+    limitations: [
+      "Cannot initiate legal action",
+      "Cannot waive fees without Board approval",
+    ],
+    escalateTriggers: [
+      "No response within 7-10 business days",
+      "Issue requires Board authority",
+      "Dispute over fees or fines",
+    ],
+    contactLink: "/contacts",
+  },
+  {
+    step: 2,
+    entity: "Board of Directors",
+    action: "Board Review",
+    description: "Request Board review for matters beyond management authority",
+    authority: [
+      "Approve/deny fee waivers",
+      "Authorize legal action",
+      "Make policy decisions",
+      "Direct management actions",
+    ],
+    limitations: [
+      "May require meeting to act",
+      "Cannot address attorney-client matters",
+    ],
+    escalateTriggers: [
+      "Board fails to respond or act",
+      "Matter becomes legal dispute",
+      "CCIOA rights violated",
+    ],
+    contactLink: "/governance",
+  },
+  {
+    step: 3,
+    entity: "HOA Legal Counsel",
+    action: "Legal Escalation",
+    description: "Matters referred to Alpenglow Law, LLC",
+    authority: [
+      "Handle collections",
+      "Formal legal correspondence",
+      "Compliance enforcement",
+    ],
+    limitations: [
+      "Acts on Board authorization only",
+      "May limit owner direct communication",
+    ],
+    escalateTriggers: ["Legal rights violated", "Need independent legal advice"],
+    contactLink: "/contacts",
+  },
+  {
+    step: 4,
+    entity: "Independent Counsel / Regulatory",
+    action: "External Resolution",
+    description: "Consult your own attorney or file regulatory complaints",
+    authority: [
+      "Independent legal advice",
+      "CCIOA violation complaints",
+      "Civil litigation if needed",
+    ],
+    limitations: [],
+    escalateTriggers: [],
+  },
+];
+
+export const MANAGEMENT_AUTHORITY_DATA: ManagementAuthorityData = {
+  delegatedAuthority: BOLD_DELEGATED_AUTHORITY,
+  contacts: BOLD_SPECIFIC_EMAILS,
+  recordsCustody: BOLD_RECORDS_CUSTODY,
+  serviceGaps: SERVICE_GAPS,
+  accountabilityStatement: ACCOUNTABILITY_STATEMENT,
+  accessRequirements: RECORDS_ACCESS_REQUIREMENTS,
 };
 
 // =============================================================================

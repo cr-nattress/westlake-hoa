@@ -14,6 +14,7 @@ export const NAV_ITEMS = [
   { href: "/meetings", label: "Meetings", icon: "Calendar" },
   { href: "/insurance", label: "Insurance", icon: "Shield" },
   { href: "/contacts", label: "Contacts", icon: "Users" },
+  { href: "/management", label: "Management", icon: "Building2" },
   { href: "/records", label: "Records", icon: "FolderOpen" },
 ] as const;
 
