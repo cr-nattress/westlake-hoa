@@ -15,6 +15,8 @@ import { AuthorityLimits } from "@/components/authority-limits";
 import { ManagementContacts } from "@/components/management-contacts";
 import { RecordsCustody } from "@/components/records-custody";
 import { ServiceGaps } from "@/components/service-gaps";
+import { CommunicationGuide } from "@/components/communication-guide";
+import { EscalationFlow } from "@/components/escalation-flow";
 import { DISCLAIMERS } from "@/lib/constants";
 import {
   BOLD_DELEGATED_AUTHORITY,
@@ -25,6 +27,7 @@ import {
   ACCOUNTABILITY_STATEMENT,
   HOA_MAILING_ADDRESS,
   KNOWLEDGE_BASE_METADATA,
+  ESCALATION_FLOW,
 } from "@/lib/data/institutional-knowledge";
 
 export const metadata: Metadata = {
@@ -101,6 +104,11 @@ export default function ManagementPage() {
         />
       </div>
 
+      {/* Communication Best Practices */}
+      <div className="mb-8">
+        <CommunicationGuide contacts={BOLD_SPECIFIC_EMAILS} />
+      </div>
+
       {/* Records Custody */}
       <div className="mb-8">
         <RecordsCustody
@@ -112,6 +120,11 @@ export default function ManagementPage() {
       {/* Service Gaps */}
       <div className="mb-8">
         <ServiceGaps gaps={SERVICE_GAPS} />
+      </div>
+
+      {/* Escalation Flow */}
+      <div className="mb-8">
+        <EscalationFlow steps={ESCALATION_FLOW} />
       </div>
 
       {/* Related Links */}

@@ -17,6 +17,11 @@ import {
   PROPERTY_MANAGEMENT,
   LEGAL_COUNSEL,
   INSURANCE_BROKER,
+  BOLD_DELEGATED_AUTHORITY,
+  BOLD_SPECIFIC_EMAILS,
+  SERVICE_GAPS,
+  ACCOUNTABILITY_STATEMENT,
+  ESCALATION_FLOW,
 } from "@/lib/data/institutional-knowledge";
 import type { Document } from "@/types/database";
 
@@ -86,6 +91,25 @@ const GOVERNANCE_KEYWORDS = [
   "matz",
 ];
 
+const MANAGEMENT_AUTHORITY_KEYWORDS = [
+  "bold can",
+  "bold cannot",
+  "management can",
+  "management cannot",
+  "authority",
+  "approve",
+  "authorize",
+  "legal action",
+  "collections",
+  "foreclosure",
+  "attorney referral",
+  "sla",
+  "service level",
+  "response time",
+  "delegated",
+  "limitation",
+];
+
 /**
  * Build institutional knowledge context string.
  * Includes HOA identity, contacts, board info, and enforcement details.
@@ -99,8 +123,11 @@ export function buildInstitutionalContext(query: string): string | undefined {
   const needsGovernanceInfo = GOVERNANCE_KEYWORDS.some((kw) =>
     queryLower.includes(kw)
   );
+  const needsManagementAuthority = MANAGEMENT_AUTHORITY_KEYWORDS.some((kw) =>
+    queryLower.includes(kw)
+  );
 
-  if (!needsContactInfo && !needsGovernanceInfo) {
+  if (!needsContactInfo && !needsGovernanceInfo && !needsManagementAuthority) {
     return undefined;
   }
 
@@ -167,6 +194,32 @@ ${ENFORCEMENT_PATH.map((s) => `${s.step}. **${s.entity}** - ${s.action}: ${s.des
 - Non-safety violations are capped at $500 total
 - Health/safety violations have no fine cap
 - All fines require Board authorization
+
+`;
+  }
+
+  // Add management authority information
+  if (needsManagementAuthority || needsContactInfo) {
+    context += `### Bold Property Management Authority
+
+**Accountability Note:** ${ACCOUNTABILITY_STATEMENT}
+
+**What Bold CAN Do (Delegated Authority):**
+${BOLD_DELEGATED_AUTHORITY.powers.map((p) => `- ${p}`).join("\n")}
+
+**What Bold CANNOT Do (Requires Board Authorization):**
+${BOLD_DELEGATED_AUTHORITY.limitations.map((l) => `- ${l.limitation}: ${l.requirement}`).join("\n")}
+
+**Specific Contact Emails:**
+${BOLD_SPECIFIC_EMAILS.map((e) => `- ${e.purpose}: ${e.email}${e.notes ? ` (${e.notes})` : ""}`).join("\n")}
+
+**Known Service Gaps:**
+${SERVICE_GAPS.map((g) => `- ${g.item}: ${g.description} - Impact: ${g.impact}`).join("\n")}
+
+**Escalation Path:**
+${ESCALATION_FLOW.map((s) => `${s.step}. **${s.entity}** - ${s.action}: ${s.description}`).join("\n")}
+
+**Important:** Bold has no documented service-level agreements (SLAs). If requesting something Bold cannot authorize, ask the Board. If Board doesn't respond, escalate to legal counsel or consult your own attorney.
 
 `;
   }
