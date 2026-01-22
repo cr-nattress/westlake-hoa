@@ -407,6 +407,66 @@ export const TOPIC_INDEX: TopicEntry[] = [
     relatedDocuments: ["responsible-governance-policies-2025"],
     keywords: ["appeal", "hearing", "dispute", "contest", "challenge", "evidence"],
   },
+  {
+    slug: "contact-management",
+    name: "Contact Property Management",
+    category: "governance",
+    question: "How do I contact Bold Property Management?",
+    quickAnswer:
+      "Email clientservices@boldsolutions.net for general inquiries. Mailing address: PO Box 5800, Avon, CO 81620. Bold handles day-to-day operations, maintenance requests, and owner communications.",
+    primaryDocument: "responsible-governance-policies-2025",
+    sections: ["Property Management"],
+    relatedDocuments: [],
+    keywords: ["contact", "bold", "management", "property", "email", "phone", "reach", "manager", "clientservices"],
+  },
+  {
+    slug: "management-authority",
+    name: "Property Management Authority",
+    category: "governance",
+    question: "What can Bold Property Management do?",
+    quickAnswer:
+      "Bold can respond to communications, coordinate maintenance, send notices, and maintain records. They cannot initiate legal action, refer accounts to attorneys, or approve foreclosures without Board authorization.",
+    primaryDocument: "responsible-governance-policies-2025",
+    sections: ["Property Management", "Board Authority"],
+    relatedDocuments: [],
+    keywords: ["bold", "authority", "management", "can", "cannot", "approve", "authorize", "legal"],
+  },
+  {
+    slug: "contact-legal",
+    name: "HOA Legal Counsel",
+    category: "governance",
+    question: "Who is the HOA's attorney?",
+    quickAnswer:
+      "Alpenglow Law, LLC (T.J. Voboril, Esq.) serves as HOA general counsel handling collections, compliance, and legal correspondence. Owners are often directed to counsel for escalated matters.",
+    primaryDocument: "responsible-governance-policies-2025",
+    sections: ["Legal Counsel"],
+    relatedDocuments: ["collections-policy-2025"],
+    keywords: ["attorney", "lawyer", "legal", "counsel", "alpenglow", "voboril", "law"],
+  },
+  {
+    slug: "contact-insurance",
+    name: "Insurance Broker Contact",
+    category: "insurance",
+    question: "How do I contact the insurance broker?",
+    quickAnswer:
+      "Mountain West Insurance: claims@mtnwst.com or 970-945-9111. Contact them for claims, certificate requests, or coverage questions about the HOA master policy.",
+    primaryDocument: "insurance-ready-reference-2025-2026",
+    sections: ["Claims Contact"],
+    relatedDocuments: ["insurance-certificate-2025-2026"],
+    keywords: ["mountain west", "insurance", "broker", "contact", "claims", "phone", "email"],
+  },
+  {
+    slug: "escalation",
+    name: "Issue Escalation",
+    category: "governance",
+    question: "How do I escalate an issue with the HOA?",
+    quickAnswer:
+      "Start with Bold Property Management. If no response in 7-10 days or the issue needs Board authority, contact the Board. For legal matters, the Board may refer to Alpenglow Law. For rights violations, consult your own attorney.",
+    primaryDocument: "responsible-governance-policies-2025",
+    sections: ["Escalation", "Board Authority"],
+    relatedDocuments: ["enforcement-policy-2025"],
+    keywords: ["escalate", "escalation", "complaint", "unresolved", "no response", "board", "help"],
+  },
 ];
 
 // ============================================
