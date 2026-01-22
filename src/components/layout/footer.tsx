@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SITE_CONFIG, DISCLAIMERS } from "@/lib/constants";
+import { DISCLAIMERS } from "@/lib/constants";
 
 export function Footer() {
   return (
@@ -46,15 +46,6 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground text-center md:text-left">
-            {SITE_CONFIG.name} &middot; Unofficial HOA Information Resource
-          </p>
-          <p className="text-xs text-muted-foreground italic text-center md:text-right">
-            Transparency works best when it is quiet.
-          </p>
-        </div>
       </div>
     </footer>
   );

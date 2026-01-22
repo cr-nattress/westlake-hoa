@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Header, Footer, MobileNav } from "@/components/layout";
+import { Header, Footer } from "@/components/layout";
 import { SITE_CONFIG } from "@/lib/constants";
 import "./globals.css";
 
@@ -93,9 +93,8 @@ export default function RootLayout({
         >
           <div className="relative flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1 pb-16 lg:pb-0">{children}</main>
+            <main className="flex-1">{children}</main>
             <Footer />
-            <MobileNav />
           </div>
         </ThemeProvider>
       </body>
