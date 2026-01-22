@@ -2,15 +2,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Search, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { ThemeToggle } from "./theme-toggle";
-import { SITE_CONFIG } from "@/lib/constants";
+import { NAV_ITEMS, SITE_CONFIG } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-const HEADER_NAV_ITEMS = [
-  { href: "/answers", label: "Quick Answers" },
-  { href: "/meetings", label: "Meetings" },
-];
+// Filter out Quick Answers and Meetings from header navigation
+const HEADER_NAV_ITEMS = NAV_ITEMS.filter(
+  (item) => item.href !== "/answers" && item.href !== "/meetings"
+);
 
 export function Header() {
   const pathname = usePathname();
@@ -28,9 +37,9 @@ export function Header() {
           </Badge>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-1">
-          {HEADER_NAV_ITEMS.map((item) => {
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center gap-1">
+          {HEADER_NAV_ITEMS.slice(0, 6).map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
@@ -50,9 +59,46 @@ export function Header() {
           })}
         </nav>
 
-        {/* Theme Toggle */}
-        <div className="flex items-center">
+        {/* Actions */}
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" aria-label="Search" className="hidden sm:inline-flex">
+            <Search className="h-5 w-5" />
+          </Button>
           <ThemeToggle />
+
+          {/* Mobile Menu */}
+          <Sheet>
+            <SheetTrigger asChild className="lg:hidden">
+              <Button variant="ghost" size="icon" aria-label="Menu">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px]">
+              <SheetHeader>
+                <SheetTitle className="text-left">{SITE_CONFIG.name}</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-2 mt-6">
+                {HEADER_NAV_ITEMS.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "px-4 py-3 text-sm font-medium rounded-md transition-colors",
+                        "hover:bg-accent hover:text-accent-foreground",
+                        isActive
+                          ? "bg-accent text-accent-foreground"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
