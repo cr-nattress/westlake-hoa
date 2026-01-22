@@ -2,6 +2,17 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
 
+// Determine if we're in production for secure cookie settings
+const isProduction = process.env.NODE_ENV === "production";
+
+// Secure cookie configuration
+const SECURE_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: "lax" as const,
+  path: "/",
+};
+
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -16,7 +27,14 @@ export async function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              // Merge Supabase options with our secure defaults
+              cookieStore.set(name, value, {
+                ...SECURE_COOKIE_OPTIONS,
+                ...options,
+                // Ensure security settings are not overridden
+                httpOnly: true,
+                secure: isProduction ? true : (options?.secure ?? false),
+              })
             );
           } catch {
             // The `setAll` method was called from a Server Component.

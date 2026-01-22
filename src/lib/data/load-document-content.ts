@@ -45,7 +45,8 @@ export function loadDocumentContent(fileUrl: string): string | null {
 
   const readmeFilename = PDF_TO_README_MAP[filename];
   if (!readmeFilename) {
-    console.warn(`No README mapping found for: ${filename}`);
+    // Log only filename, not full path (security: don't expose file structure)
+    console.warn(`[DOC_LOAD] No README mapping for file`);
     return null;
   }
 
@@ -53,8 +54,9 @@ export function loadDocumentContent(fileUrl: string): string | null {
 
   try {
     return fs.readFileSync(readmePath, "utf-8");
-  } catch (error) {
-    console.warn(`Failed to load README: ${readmePath}`, error);
+  } catch {
+    // Log generic error without path or error details (security: don't expose file structure)
+    console.warn(`[DOC_LOAD] Failed to load document content`);
     return null;
   }
 }

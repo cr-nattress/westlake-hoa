@@ -6,17 +6,21 @@ import {
   formatContextForPrompt,
   type AIContextResult,
 } from "@/lib/ai/context-builder";
+import {
+  checkRateLimit,
+  getClientIP,
+  rateLimitExceededResponse,
+  ChatRequestSchema,
+  validateRequest,
+  validationErrorResponse,
+  sanitizeForPrompt,
+  sanitizeForLogging,
+  validateUploadedDocument,
+  type AttachedDocument,
+} from "@/lib/security";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
-
-// Type for attached document from client
-interface AttachedDocument {
-  name: string;
-  type: string;
-  content: string;
-  size: number;
-}
 
 /**
  * Build enhanced system prompt with document context
@@ -141,26 +145,80 @@ Remember: ${attachedDocument
 
 export async function POST(req: Request) {
   try {
-    const { messages, attachedDocument } = await req.json();
+    // === RATE LIMITING ===
+    const clientIP = getClientIP(req);
+    const rateLimitResult = await checkRateLimit(clientIP);
 
+    if (!rateLimitResult.success) {
+      console.log(`[RATE_LIMIT] Blocked: ${clientIP}`);
+      return rateLimitExceededResponse(rateLimitResult);
+    }
+
+    // === REQUEST VALIDATION ===
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON in request body" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    const validation = validateRequest(ChatRequestSchema, body);
+    if (!validation.success) {
+      console.log(`[VALIDATION] Failed: ${JSON.stringify(validation.error?.details)}`);
+      return validationErrorResponse(validation.error);
+    }
+
+    const { messages, attachedDocument } = validation.data!;
+
+    // === FILE VALIDATION (Server-Side) ===
+    if (attachedDocument) {
+      const fileValidation = validateUploadedDocument(
+        attachedDocument.name,
+        attachedDocument.type,
+        attachedDocument.content,
+        attachedDocument.size
+      );
+
+      if (!fileValidation.valid) {
+        console.log(`[FILE_VALIDATION] Failed: ${fileValidation.errors.join(", ")}`);
+        return new Response(
+          JSON.stringify({
+            error: "Invalid document",
+            details: fileValidation.errors,
+          }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
+    }
+
+    // === PROCESS REQUEST ===
     // Get the latest user message to build context
-    const userMessages = messages.filter(
-      (m: { role: string }) => m.role === "user"
-    );
+    const userMessages = messages.filter((m) => m.role === "user");
     const lastUserMessage = userMessages[userMessages.length - 1];
     const query = lastUserMessage?.content || "";
 
     // Build dynamic context based on the user's query
     const context = buildAIContext(query);
 
-    // Log context stats for debugging
+    // Sanitize attached document content for prompt injection prevention
+    const sanitizedDocument = attachedDocument
+      ? {
+          ...attachedDocument,
+          content: sanitizeForPrompt(attachedDocument.content),
+        }
+      : undefined;
+
+    // Log context stats (sanitized)
     console.log(
-      `AI Context: ${context.documents.length} docs, ${context.totalChars.toLocaleString()} chars, ${context.relevantTopics.length} relevant topics${attachedDocument ? `, uploaded: ${attachedDocument.name}` : ''}`
+      `[CHAT] IP: ${clientIP.slice(0, 8)}***, docs: ${context.documents.length}, topics: ${context.relevantTopics.length}${sanitizedDocument ? `, upload: ${sanitizeForLogging(sanitizedDocument.name, 50)}` : ""}`
     );
 
     const result = streamText({
       model: anthropic("claude-sonnet-4-20250514"),
-      system: buildSystemPrompt(context, attachedDocument as AttachedDocument | undefined),
+      system: buildSystemPrompt(context, sanitizedDocument),
       messages,
       temperature: 0.3, // Lower temperature for more factual responses
       maxTokens: 2000,
@@ -168,7 +226,10 @@ export async function POST(req: Request) {
 
     return result.toDataStreamResponse();
   } catch (error) {
-    console.error("Chat API error:", error);
+    // Log error without sensitive details
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error(`[CHAT_ERROR] ${sanitizeForLogging(errorMessage)}`);
+
     return new Response(
       JSON.stringify({ error: "Failed to process chat request" }),
       {

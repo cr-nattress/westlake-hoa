@@ -8,6 +8,7 @@
 
 import { getAllDocuments } from "@/lib/data/documents";
 import { findTopicsByKeyword } from "@/lib/data/topic-index";
+import { escapeRegex } from "@/lib/security";
 import {
   HOA_IDENTITY,
   CONTACTS,
@@ -346,7 +347,9 @@ function extractRelevantSection(content: string, query: string): string | null {
     let score = 0;
 
     for (const word of queryWords) {
-      const matches = sectionLower.match(new RegExp(word, "gi"));
+      // Escape user input to prevent ReDoS attacks
+      const escapedWord = escapeRegex(word);
+      const matches = sectionLower.match(new RegExp(escapedWord, "gi"));
       if (matches) {
         score += matches.length;
       }
