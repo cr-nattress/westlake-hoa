@@ -7,8 +7,8 @@ Comprehensive security hardening of the Westlake HOA website based on a deep sec
 ## Business Value
 
 **Problem:** Security audit revealed multiple vulnerabilities including:
-- **2 Critical Issues:** Exposed API keys in repository, vulnerable AI SDK dependency
-- **3 High Issues:** Missing authentication, rate limiting, and security middleware
+- **1 Critical Issue:** Missing rate limiting on public API
+- **3 High Issues:** Missing authentication, security middleware, input validation
 - **9 Medium Issues:** Input validation gaps, prompt injection risks, missing security headers
 - **5 Low Issues:** Minor logging and configuration concerns
 
@@ -27,22 +27,20 @@ Comprehensive security hardening of the Westlake HOA website based on a deep sec
 
 | Finding | Location | Risk |
 |---------|----------|------|
-| Exposed API Keys in .env | `.env` (lines 9, 13, 19) | Credentials compromised in git history |
-| AI SDK File Upload Vulnerability | `ai@^4.3.19` | GHSA-rwvc-j5jr-mgvh - file type bypass |
+| Missing Rate Limiting | `/api/chat` route | DoS and cost abuse |
 
 ### High Severity Findings
 
 | Finding | Location | Risk |
 |---------|----------|------|
 | Missing Authentication | `/api/chat` route | Public API, no auth checks |
-| Missing Rate Limiting | `/api/chat` route | DoS and cost abuse |
 | Missing Security Middleware | No `middleware.ts` | No CSRF, headers, or request validation |
+| No Input Validation Schema | `chat/route.ts:144` | Malformed requests crash server |
 
 ### Medium Severity Findings
 
 | Finding | Location | Risk |
 |---------|----------|------|
-| No Input Validation Schema | `chat/route.ts:144` | Malformed requests crash server |
 | Prompt Injection via Uploads | `chat/route.ts:113-127` | AI manipulation via document content |
 | ReDoS Vulnerability | `context-builder.ts:349` | CPU exhaustion via crafted queries |
 | Missing Security Headers | `next.config.ts` | XSS, clickjacking exposure |
@@ -66,8 +64,6 @@ Comprehensive security hardening of the Westlake HOA website based on a deep sec
 
 | ID | Story | Points | Priority | Dependencies |
 |----|-------|--------|----------|--------------|
-| 11.1 | Rotate Exposed Credentials | 2 | Critical | None |
-| 11.2 | Update Vulnerable Dependencies | 3 | Critical | None |
 | 11.3 | Implement API Rate Limiting | 5 | Critical | None |
 | 11.4 | Add Request Validation Schema | 5 | High | None |
 | 11.5 | Implement Security Headers | 3 | High | None |
@@ -81,15 +77,13 @@ Comprehensive security hardening of the Westlake HOA website based on a deep sec
 | 11.13 | Add Security Event Logging | 3 | Low | 11.6 |
 | 11.14 | Implement API Versioning | 2 | Low | None |
 
-**Total Points:** 46
+**Total Points:** 41
 
 ## Phase Breakdown
 
-### Phase 11A: Critical Remediation (Stories 11.1, 11.2, 11.3)
-**Goal:** Address critical vulnerabilities immediately
-- Rotate all exposed credentials
-- Update vulnerable dependencies
-- Implement rate limiting to prevent abuse
+### Phase 11A: Critical Remediation (Story 11.3)
+**Goal:** Address critical vulnerability immediately
+- Implement rate limiting to prevent API abuse and DoS attacks
 
 ### Phase 11B: Input Security (Stories 11.4, 11.7, 11.8, 11.9)
 **Goal:** Secure all input vectors
@@ -112,32 +106,6 @@ Comprehensive security hardening of the Westlake HOA website based on a deep sec
 - Implement API versioning
 
 ## Technical Implementation Details
-
-### 11.1 Rotate Exposed Credentials
-
-**Immediate Actions:**
-1. Rotate Supabase anon key in dashboard
-2. Rotate Supabase service role key
-3. Rotate Anthropic API key
-4. Remove `.env` from git history:
-   ```bash
-   git filter-branch --force --index-filter \
-     "git rm --cached --ignore-unmatch .env" \
-     --prune-empty --tag-name-filter cat -- --all
-   ```
-5. Force push to remote (coordinate with team)
-6. Verify `.gitignore` includes `.env`
-
-### 11.2 Update Vulnerable Dependencies
-
-```json
-// package.json updates
-{
-  "ai": "^6.0.44"  // Critical: fixes GHSA-rwvc-j5jr-mgvh
-}
-```
-
-**Breaking Changes:** Test thoroughly after update
 
 ### 11.3 Implement API Rate Limiting
 
@@ -315,9 +283,8 @@ export function validateFileContent(
 
 | Metric | Current | Target |
 |--------|---------|--------|
-| Critical vulnerabilities | 2 | 0 |
+| Critical vulnerabilities | 1 | 0 |
 | High vulnerabilities | 3 | 0 |
-| npm audit issues | 2 moderate | 0 |
 | Security headers score | F | A |
 | Rate limiting | None | 10 req/min |
 | Input validation coverage | 0% | 100% |
@@ -331,17 +298,13 @@ export function validateFileContent(
 
 - **Infrastructure:**
   - Upstash Redis account (or Vercel KV)
-  - Updated Supabase credentials
-  - Updated Anthropic API key
 
 ## Risks & Mitigations
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
-| Breaking changes from AI SDK update | High | Medium | Thorough testing, staged rollout |
 | Rate limiting blocks legitimate users | Medium | Medium | Start with generous limits, monitor |
 | CSP breaks functionality | Medium | Low | Test all features, use report-only first |
-| Credential rotation causes downtime | Low | High | Coordinate update, use env vars |
 
 ## Testing Checklist
 
@@ -353,15 +316,11 @@ export function validateFileContent(
 - [ ] No sensitive data in production logs
 - [ ] CORS properly configured
 - [ ] Cookies have secure attributes
-- [ ] npm audit shows 0 vulnerabilities
 
 ## Deployment Checklist
 
 ### Pre-Deployment
-- [ ] Rotate all exposed credentials
-- [ ] Update all vulnerable dependencies
 - [ ] Run full test suite
-- [ ] Security scan with `npm audit`
 - [ ] Test CSP in report-only mode
 
 ### Deployment
@@ -373,7 +332,6 @@ export function validateFileContent(
 
 ### Post-Deployment
 - [ ] Monitor logs for blocked requests
-- [ ] Verify no credential leaks
 - [ ] Run security scan
 - [ ] Document any issues
 - [ ] Update security documentation
@@ -384,5 +342,3 @@ export function validateFileContent(
 - [Next.js Security Best Practices](https://nextjs.org/docs/app/building-your-application/configuring/content-security-policy)
 - [Supabase Security](https://supabase.com/docs/guides/platform/security)
 - [Anthropic API Security](https://docs.anthropic.com/claude/docs/security)
-- CVE: GHSA-rwvc-j5jr-mgvh (AI SDK file upload)
-- CVE: GHSA-33vc-wfww-vjfv (jsondiffpatch XSS)
