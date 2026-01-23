@@ -145,7 +145,6 @@ export const HOA_BOARD_FULL: ContactEntityFull = {
   type: "board",
   emails: [
     { address: "WLVAVON@gmail.com", purpose: "Board email" },
-    { address: "mrmatz13@gmail.com", purpose: "Mark Matz, President" },
   ],
   keyContacts: [
     { name: "Mark Matz", title: "President", asOf: "November 2025" },
