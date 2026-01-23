@@ -249,3 +249,177 @@ export interface ContactEntityFull {
   notes?: string[];
   responsibilities?: string[];
 }
+
+// =============================================================================
+// Epic 13: Vendor Profile Types
+// =============================================================================
+
+/**
+ * Type of vendor (used for styling and categorization)
+ */
+export type VendorType = "property-management" | "legal" | "enforcement";
+
+/**
+ * Vendor leadership/team member
+ */
+export interface VendorLeader {
+  name: string;
+  title: string;
+  background?: string;
+  recognition?: string[];
+  contact?: {
+    email?: string;
+    phone?: string;
+  };
+}
+
+/**
+ * Vendor service offering
+ */
+export interface VendorService {
+  name: string;
+  description: string;
+  details?: string[];
+  icon?: string; // Lucide icon name
+}
+
+/**
+ * External rating/review
+ */
+export interface VendorRating {
+  source: string;
+  rating: string;
+  description?: string;
+  url?: string;
+  dateRecorded?: string;
+}
+
+/**
+ * Consumer right (for enforcement vendors)
+ */
+export interface ConsumerRight {
+  title: string;
+  description: string;
+  legalBasis?: string; // e.g., "HB25-1117" or "4 CCR 723-6"
+  icon?: string;
+}
+
+/**
+ * Regulatory information (for enforcement vendors)
+ */
+export interface RegulatoryInfo {
+  governingBody: string;
+  permitRequired: boolean;
+  keyRequirements: string[];
+  consumerRights: ConsumerRight[];
+  complaintProcess: {
+    phone: string;
+    tollFree?: string;
+    description: string;
+  };
+  relevantLaws?: {
+    name: string;
+    description: string;
+    effectiveDate?: string;
+  }[];
+}
+
+/**
+ * Technology/platform used by vendor
+ */
+export interface VendorTechnology {
+  name: string;
+  description: string;
+  url?: string;
+  features?: string[];
+}
+
+/**
+ * Scale/size metric
+ */
+export interface VendorScaleMetric {
+  metric: string;
+  value: string;
+}
+
+/**
+ * Main vendor profile
+ */
+export interface VendorProfile {
+  // Identity
+  id: string;
+  slug: string;
+  name: string;
+  legalName?: string;
+  type: VendorType;
+  tagline: string;
+
+  // Company Info
+  founded: string;
+  headquarters: string;
+  entityId?: string; // Colorado entity ID
+  status?: string; // e.g., "Good Standing"
+
+  // Overview
+  description: string;
+  missionStatement?: string;
+  history?: string;
+
+  // Scale/Size
+  scale?: VendorScaleMetric[];
+
+  // Services
+  services: VendorService[];
+
+  // Contact Information
+  contact: {
+    phone?: string;
+    phoneExtensions?: { ext: string; purpose: string }[];
+    email?: string;
+    website?: string;
+    address?: string;
+    mailingAddress?: string;
+    portalUrl?: string;
+    portalName?: string;
+  };
+
+  // Leadership/Team
+  leadership?: VendorLeader[];
+
+  // Technology Platforms
+  technology?: VendorTechnology[];
+
+  // Reputation
+  ratings?: VendorRating[];
+  awards?: string[];
+  concerns?: string[]; // For transparency about issues
+
+  // Regulatory (primarily for enforcement vendors)
+  regulatory?: RegulatoryInfo;
+
+  // Service area
+  serviceArea?: string[];
+
+  // Metadata
+  sourceDocument: string;
+  lastUpdated: string;
+}
+
+/**
+ * Type guard to check if vendor is enforcement type
+ */
+export function isEnforcementVendor(vendor: VendorProfile): boolean {
+  return vendor.type === "enforcement";
+}
+
+/**
+ * Type guard to check if vendor has consumer rights info
+ */
+export function hasConsumerRights(
+  vendor: VendorProfile
+): vendor is VendorProfile & { regulatory: RegulatoryInfo } {
+  return (
+    vendor.regulatory !== undefined &&
+    vendor.regulatory.consumerRights.length > 0
+  );
+}

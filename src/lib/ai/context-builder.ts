@@ -24,6 +24,11 @@ import {
   ACCOUNTABILITY_STATEMENT,
   ESCALATION_FLOW,
 } from "@/lib/data/institutional-knowledge";
+import {
+  VENDORS,
+  coloradoBooting,
+  WRONGFUL_BOOTING_GUIDE,
+} from "@/lib/data/vendors";
 import type { Document } from "@/types/database";
 
 // Context size limits
@@ -111,9 +116,29 @@ const MANAGEMENT_AUTHORITY_KEYWORDS = [
   "limitation",
 ];
 
+const VENDOR_KEYWORDS = [
+  "vendor",
+  "booting",
+  "boot",
+  "booted",
+  "car boot",
+  "wheel boot",
+  "tow",
+  "towed",
+  "parking enforcement",
+  "colorado booting",
+  "parkingcode",
+  "immobiliz",
+  "$160",
+  "$60",
+  "wrongful",
+  "bbb",
+  "better business",
+];
+
 /**
  * Build institutional knowledge context string.
- * Includes HOA identity, contacts, board info, and enforcement details.
+ * Includes HOA identity, contacts, board info, enforcement details, and vendor info.
  */
 export function buildInstitutionalContext(query: string): string | undefined {
   const queryLower = query.toLowerCase();
@@ -127,8 +152,11 @@ export function buildInstitutionalContext(query: string): string | undefined {
   const needsManagementAuthority = MANAGEMENT_AUTHORITY_KEYWORDS.some((kw) =>
     queryLower.includes(kw)
   );
+  const needsVendorInfo = VENDOR_KEYWORDS.some((kw) =>
+    queryLower.includes(kw)
+  );
 
-  if (!needsContactInfo && !needsGovernanceInfo && !needsManagementAuthority) {
+  if (!needsContactInfo && !needsGovernanceInfo && !needsManagementAuthority && !needsVendorInfo) {
     return undefined;
   }
 
@@ -221,6 +249,43 @@ ${SERVICE_GAPS.map((g) => `- ${g.item}: ${g.description} - Impact: ${g.impact}`)
 ${ESCALATION_FLOW.map((s) => `${s.step}. **${s.entity}** - ${s.action}: ${s.description}`).join("\n")}
 
 **Important:** Bold has no documented service-level agreements (SLAs). If requesting something Bold cannot authorize, ask the Board. If Board doesn't respond, escalate to legal counsel or consult your own attorney.
+
+`;
+  }
+
+  // Add vendor/booting information
+  if (needsVendorInfo) {
+    const booting = coloradoBooting;
+    context += `### Vehicle Booting / Parking Enforcement
+
+**Company:** ${booting.name}
+- Phone: ${booting.contact.phone} (ext. 1 for boot removal)
+- Email: ${booting.contact.email}
+- Website: ${booting.contact.website}
+- BBB Rating: F (lowest possible - 13 unanswered complaints)
+
+**YOUR RIGHTS Under Colorado Law:**
+${booting.regulatory?.consumerRights.map((r) => `- **${r.title}**: ${r.description}${r.legalBasis ? ` (${r.legalBasis})` : ""}`).join("\n")}
+
+**Key Fee Limits:**
+- Maximum boot removal fee: $160
+- Under HB25-1117, you can pay max $60 to get the boot released
+- Release time: 90 minutes (business hours), 120 minutes (after hours)
+
+**You CANNOT Be Booted For:**
+- Being inside your vehicle (occupied vehicle prohibition)
+- Expired registration alone
+- Without proper signage at lot entrance
+- Without 24-hour written notice (with some exceptions)
+
+**If You Believe You Were Wrongfully Booted:**
+${WRONGFUL_BOOTING_GUIDE.map((step) => `${step.step}. **${step.title}**: ${step.description}`).join("\n")}
+
+**File a Complaint:**
+- Colorado PUC: ${booting.regulatory?.complaintProcess.phone} (option #2) or toll-free ${booting.regulatory?.complaintProcess.tollFree}
+- ${booting.regulatory?.complaintProcess.description}
+
+**Important:** Company's terms state all payments are non-refundable. Disputes require binding arbitration. For detailed vendor information, visit /vendors/colorado-booting.
 
 `;
   }

@@ -26,6 +26,10 @@ An unofficial, homeowner-run transparency website providing clear, lawful, and n
 | 7 | Polish & Performance | 3 | Medium | Not Started |
 | 8 | Document Intelligence & AI Enhancement | 2 | High | Complete |
 | 9 | Knowledge Base Integration | 2 | High | Complete |
+| 10 | Management Transparency | 2 | High | Not Started |
+| 11 | Security Hardening | 2 | Medium | Not Started |
+| 12 | Contact Directory | 2 | High | Not Started |
+| 13 | Vendor Education & Transparency Hub | 2 | High | Not Started |
 
 ---
 
@@ -45,8 +49,11 @@ An unofficial, homeowner-run transparency website providing clear, lawful, and n
 - Epic 6: Records Request Guide
 - Epic 8: Document Intelligence & AI Enhancement
 - Epic 9: Knowledge Base Integration
+- Epic 10: Management Transparency
+- Epic 12: Contact Directory
+- Epic 13: Vendor Education & Transparency Hub
 
-**Goal:** Complete information hub with all major HOA topics covered, plus intelligent document search, AI-powered answers, and institutional knowledge (contacts, governance, transparency).
+**Goal:** Complete information hub with all major HOA topics covered, plus intelligent document search, AI-powered answers, institutional knowledge (contacts, governance, transparency), and comprehensive vendor education.
 
 ### Phase 3: Refinement
 - Epic 7: Polish & Performance
@@ -147,19 +154,31 @@ backlog/
 │       ├── 8.10-document-search-enhancement.md
 │       ├── 8.11-related-documents-component.md
 │       └── 8.12-document-key-facts-card.md
-└── epic-9-knowledge-base-integration/
+├── epic-9-knowledge-base-integration/
+│   ├── EPIC.md
+│   └── stories/
+│       ├── 9.1-hoa-identity-section.md
+│       ├── 9.2-key-contacts-page.md
+│       ├── 9.3-governance-board-section.md
+│       ├── 9.4-property-management-component.md
+│       ├── 9.5-legal-counsel-component.md
+│       ├── 9.6-transparency-accountability-section.md
+│       ├── 9.7-enhanced-records-guide.md
+│       ├── 9.8-enforcement-process-guide.md
+│       ├── 9.9-ai-knowledge-integration.md
+│       └── 9.10-data-model.md
+├── epic-10-management-transparency/
+├── epic-11-security-hardening/
+├── epic-12-contact-directory/
+└── epic-13-vendor-education/
     ├── EPIC.md
     └── stories/
-        ├── 9.1-hoa-identity-section.md
-        ├── 9.2-key-contacts-page.md
-        ├── 9.3-governance-board-section.md
-        ├── 9.4-property-management-component.md
-        ├── 9.5-legal-counsel-component.md
-        ├── 9.6-transparency-accountability-section.md
-        ├── 9.7-enhanced-records-guide.md
-        ├── 9.8-enforcement-process-guide.md
-        ├── 9.9-ai-knowledge-integration.md
-        └── 9.10-data-model.md
+        ├── 13.1-vendor-data-model.md
+        ├── 13.2-vendors-page-layout.md
+        ├── 13.3-property-management-profile.md
+        ├── 13.4-legal-counsel-profile.md
+        ├── 13.5-booting-company-profile.md
+        └── 13.6-navigation-ai-integration.md
 ```
 
 ---
