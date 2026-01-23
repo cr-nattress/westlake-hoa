@@ -25,9 +25,11 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-3">Resources</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link href="/faq" className="hover:text-foreground transition-colors">FAQ</Link></li>
               <li><Link href="/insurance" className="hover:text-foreground transition-colors">Insurance Info</Link></li>
               <li><Link href="/records" className="hover:text-foreground transition-colors">Records Request</Link></li>
               <li><Link href="/meetings" className="hover:text-foreground transition-colors">Meetings</Link></li>
+              <li><Link href="/vendors" className="hover:text-foreground transition-colors">Vendors</Link></li>
             </ul>
           </div>
           <div>

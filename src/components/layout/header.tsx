@@ -16,9 +16,9 @@ import { ThemeToggle } from "./theme-toggle";
 import { NAV_ITEMS, SITE_CONFIG } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-// Filter out Quick Answers and Meetings from header navigation
+// Filter out items that are footer-only
 const HEADER_NAV_ITEMS = NAV_ITEMS.filter(
-  (item) => item.href !== "/answers" && item.href !== "/meetings"
+  (item) => !["/answers", "/meetings", "/faq", "/insurance", "/documents", "/records"].includes(item.href)
 );
 
 export function Header() {
